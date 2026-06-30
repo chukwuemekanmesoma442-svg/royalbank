@@ -1,5 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import logo from "../assets/logo.png";
+
 function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +26,7 @@ function Login({ onLogin }) {
     >
       <div
         style={{
-          background: "white",
+          background: "#fff",
           width: "380px",
           padding: "40px",
           borderRadius: "15px",
@@ -34,17 +35,21 @@ function Login({ onLogin }) {
         }}
       >
         <img
-  src={logo}
-  alt="Royal Bank Logo"
-  style={{
-    width: "120px",
-    marginBottom: "15px",
-  }}
-/>
+          src={logo}
+          alt="Royal Bank Logo"
+          style={{
+            width: "120px",
+            marginBottom: "15px",
+          }}
+        />
 
-<h1 style={{ color: "#0B3D91" }}>Royal Bank</h1>
+        <h1 style={{ color: "#0B3D91" }}>
+          Royal Bank
+        </h1>
 
-        <p>Secure Online Banking</p>
+        <p style={{ color: "#666", marginBottom: "20px" }}>
+          Secure Online Banking
+        </p>
 
         <input
           type="text"
@@ -54,7 +59,7 @@ function Login({ onLogin }) {
           style={{
             width: "100%",
             padding: "12px",
-            marginTop: "15px",
+            marginBottom: "15px",
             borderRadius: "8px",
             border: "1px solid #ccc",
             boxSizing: "border-box",
@@ -69,7 +74,7 @@ function Login({ onLogin }) {
           style={{
             width: "100%",
             padding: "12px",
-            marginTop: "15px",
+            marginBottom: "20px",
             borderRadius: "8px",
             border: "1px solid #ccc",
             boxSizing: "border-box",
@@ -79,11 +84,10 @@ function Login({ onLogin }) {
         <button
           onClick={handleLogin}
           style={{
-            marginTop: "20px",
             width: "100%",
             padding: "12px",
             background: "#0B3D91",
-            color: "white",
+            color: "#fff",
             border: "none",
             borderRadius: "8px",
             fontSize: "16px",
