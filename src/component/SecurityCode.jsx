@@ -4,7 +4,7 @@ function SecurityCode({ setPage }) {
   const [code, setCode] = useState("");
 
   const verifyCode = () => {
-    if (code === "472916") {
+    if (code === "npm run bu") {
   alert("Verifying your identity... Please wait.");
 
   setTimeout(() => {
