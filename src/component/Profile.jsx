@@ -1,64 +1,73 @@
-function Profile({setPage}) {
+import React from "react";
+
+function Profile({ setPage }) {
   return (
     <div
       style={{
-        background: "#071B36",
         minHeight: "100vh",
-        color: "white",
-        padding: "40px",
-        fontFamily: "Arial, sans-serif",
+        background: "#f5f7fb",
+        padding: "20px",
       }}
     >
-      <h1>👤 Customer Profile</h1>
-<button
-  onClick={() => setPage("dashboard")}
-  style={{
-    marginTop: "20px",
-    marginBottom: "20px",
-    padding: "12px 25px",
-    background: "#0B3D91",
-    color: "white",
-    border: "none",
-    borderRadius: "10px",
-    cursor: "pointer",
-    fontSize: "16px",
-  }}
->
-  ⬅ Back to Dashboard
-</button>
-      <div
+      <button
+        onClick={() => setPage("dashboard")}
         style={{
-          background: "white",
-          color: "#222",
-          padding: "30px",
-          borderRadius: "20px",
-          maxWidth: "700px",
-          marginTop: "30px",
+          border: "none",
+          background: "#005EB8",
+          color: "#fff",
+          padding: "10px 18px",
+          borderRadius: "10px",
+          cursor: "pointer",
         }}
       >
-        <h2>Kristy Rehman</h2>
+        ← Back
+      </button>
 
-        <hr />
+      <div
+        style={{
+          marginTop: "30px",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            width: "90px",
+            height: "90px",
+            borderRadius: "50%",
+            background: "#005EB8",
+            color: "#fff",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: "32px",
+            fontWeight: "bold",
+            margin: "auto",
+          }}
+        >
+          KR
+        </div>
 
-        <p><strong>Customer ID:</strong> RB-2026-004582</p>
+        <h2>Kirsty Rehman</h2>
 
-        <p><strong>Account Number:</strong> ****4582</p>
+        <p style={{ color: "#666" }}>
+          Personal Current Account
+        </p>
+      </div>
 
-        <p><strong>Sort Code:</strong> 20-45-67</p>
-
-        <p><strong>IBAN:</strong> GB29 RBKL 2045 6745 8200 18</p>
-
-        <p><strong>Account Type:</strong> Premium Current Account</p>
-
-        <p><strong>Current Balance:</strong> £1,600,900.00</p>
-
-        <p><strong>Status:</strong> 🟠 Dormant</p>
-
-        <p><strong>Email:</strong> kristy.rehman@royalbank.co.uk</p>
-
-        <p><strong>Phone:</strong> +44 7700 900123</p>
-
-        <p><strong>Address:</strong> 25 Kensington High Street, London, W8 5NP</p>
+      <div
+        style={{
+          background: "#fff",
+          marginTop: "30px",
+          borderRadius: "18px",
+          padding: "20px",
+          boxShadow: "0 5px 15px rgba(0,0,0,.08)",
+        }}
+      >
+        <p><strong>Customer ID:</strong> RB102874</p>
+        <p><strong>Account Number:</strong> ****2874</p>
+        <p><strong>Sort Code:</strong> 16-28-74</p>
+        <p><strong>Currency:</strong> GBP (£)</p>
+        <p><strong>Status:</strong> Dormant</p>
       </div>
     </div>
   );

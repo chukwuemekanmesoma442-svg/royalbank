@@ -1,49 +1,55 @@
-import { useState } from "react";
-import Login from "./component/login.jsx";
-import Dashboard from "./component/Dashboard.jsx";
+import React, { useState } from "react";
+import Notifications from "./component/Notifications";
+import Dashboard from "./component/Dashboard";
+import SecurityCode from "./component/SecurityCode";
+import Profile from "./component/Profile";
+import Settings from "./component/Settings";
 import Transactions from "./component/Transactions.jsx";
-import Transfer from "./component/Transfer.jsx";
-import Profile from "./component/Profile.jsx";
-import Notifications from "./component/Notifications.jsx";
-import Settings from "./component/Settings.jsx";
-import Admin from "./component/Admin.jsx";
-
+import CustomerSupport from "./component/customerSupport.jsx";
+import Transfer from "./component/Transfer";
+import Cards from "./component/Cards";
 function App() {
-  const [page, setPage] = useState("login");
+  const [page, setPage] = useState("dashboard");
 
-  if (page === "login") {
-    return <Login onLogin={() => setPage("dashboard")} />;
-  }
+  return (
+    <>
+      {page === "dashboard" && (
+  <Dashboard setPage={setPage} />
+)}
 
-  if (page === "dashboard") {
-    return <Dashboard setPage={setPage} />;
-  }
+{page === "security" && (
+  <SecurityCode setPage={setPage} />
+)}
 
-  if (page === "transactions") {
-    return <Transactions setPage={setPage} />;
-  }
+{page === "profile" && (
+  <Profile setPage={setPage} />
+)}
 
-  if (page === "transfer") {
-    return <Transfer setPage={setPage} />;
-  }
+{page === "notifications" && (
+  <Notifications setPage={setPage} />
+)}
 
-  if (page === "profile") {
-    return <Profile setPage={setPage} />;
-  }
+{page === "settings" && (
+  <Settings setPage={setPage} />
+)}
 
-  if (page === "notifications") {
-    return <Notifications setPage={setPage} />;
-  }
+{page === "transactions" && (
+  <Transactions setPage={setPage} />
+)}
 
-  if (page === "settings") {
-    return <Settings setPage={setPage} />;
-  }
+{page === "support" && (
+  <CustomerSupport setPage={setPage} />
+)}
 
-  if (page === "admin") {
-    return <Admin setPage={setPage} />;
-  }
+{page === "transfer" && (
+  <Transfer setPage={setPage} />
+)}
 
-  return <Dashboard setPage={setPage} />;
+{page === "cards" && (
+  <Cards setPage={setPage} />
+)}
+    </>
+  );
 }
 
 export default App;
