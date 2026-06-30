@@ -8,7 +8,7 @@ import Transactions from "./component/Transactions.jsx";
 import CustomerSupport from "./component/CustomerSupport";
 import Transfer from "./component/Transfer";
 import Cards from "./component/Cards";
-import Login from "./component/MyLogin.jsx";
+import login from "./component/login.jsx";
 
 function App() {
   const [page, setPage] = useState("login");

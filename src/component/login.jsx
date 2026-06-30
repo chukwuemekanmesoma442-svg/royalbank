@@ -1,55 +1,48 @@
 import React, { useState } from "react";
-import logo from "../assets/logo.png";
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleLogin() {
-    if (username === "admin" && password === "1234") {
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    if (username === "kristy" && password === "1234") {
       onLogin();
     } else {
-      alert("Invalid Username or Password");
+      alert("Invalid username or password");
     }
-  }
+  };
 
   return (
     <div
       style={{
-        background: "#0B1F3A",
-        minHeight: "100vh",
+        height: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        fontFamily: "Arial, sans-serif",
+        background: "#071B36",
       }}
     >
-      <div
+      <form
+        onSubmit={handleLogin}
         style={{
           background: "#fff",
-          width: "380px",
-          padding: "40px",
-          borderRadius: "15px",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
-          textAlign: "center",
+          padding: "30px",
+          borderRadius: "12px",
+          width: "320px",
+          boxShadow: "0 0 15px rgba(0,0,0,0.3)",
         }}
       >
-        <img
-          src={logo}
-          alt="Royal Bank Logo"
+        <h2
           style={{
-            width: "120px",
-            marginBottom: "15px",
+            textAlign: "center",
+            color: "#071B36",
+            marginBottom: "20px",
           }}
-        />
-
-        <h1 style={{ color: "#0B3D91" }}>
-          Royal Bank
-        </h1>
-
-        <p style={{ color: "#666", marginBottom: "20px" }}>
-          Secure Online Banking
-        </p>
+        >
+          Royal Bank Login
+        </h2>
 
         <input
           type="text"
@@ -58,11 +51,10 @@ function Login({ onLogin }) {
           onChange={(e) => setUsername(e.target.value)}
           style={{
             width: "100%",
-            padding: "12px",
+            padding: "10px",
             marginBottom: "15px",
-            borderRadius: "8px",
+            borderRadius: "6px",
             border: "1px solid #ccc",
-            boxSizing: "border-box",
           }}
         />
 
@@ -73,47 +65,43 @@ function Login({ onLogin }) {
           onChange={(e) => setPassword(e.target.value)}
           style={{
             width: "100%",
-            padding: "12px",
+            padding: "10px",
             marginBottom: "20px",
-            borderRadius: "8px",
+            borderRadius: "6px",
             border: "1px solid #ccc",
-            boxSizing: "border-box",
           }}
         />
 
         <button
-          onClick={handleLogin}
+          type="submit"
           style={{
             width: "100%",
             padding: "12px",
-            background: "#0B3D91",
-            color: "#fff",
+            background: "#D4AF37",
+            color: "#071B36",
             border: "none",
-            borderRadius: "8px",
-            fontSize: "16px",
+            borderRadius: "6px",
+            fontWeight: "bold",
             cursor: "pointer",
           }}
         >
           Login
         </button>
-      </div>
+
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: "15px",
+            fontSize: "13px",
+            color: "#666",
+          }}
+        >
+          Username: <b>kristy</b><br />
+          Password: <b>1234</b>
+        </p>
+      </form>
     </div>
   );
 }
 
 export default Login;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
