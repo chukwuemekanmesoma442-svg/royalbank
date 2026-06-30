@@ -5,7 +5,7 @@ import SecurityCode from "./component/SecurityCode";
 import Profile from "./component/Profile";
 import Settings from "./component/Settings";
 import Transactions from "./component/Transactions.jsx";
-import CustomerSupport from "./component/customerSupport.jsx";
+import CustomerSupport from "./component/CustomerSupport";
 import Transfer from "./component/Transfer";
 import Cards from "./component/Cards";
 function App() {
