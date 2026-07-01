@@ -11,7 +11,7 @@ import Cards from "./component/Cards";
 import Login from "./component/Login.jsx";
 
 function App() {
-  const [page, setPage] = useState("login");
+  const [page, setPage] = useState("Login");
 
   return (
     <>{page === "login" && (
