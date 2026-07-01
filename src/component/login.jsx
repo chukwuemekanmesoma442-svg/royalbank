@@ -17,21 +17,22 @@ function Login({ onLogin }) {
   return (
     <div
       style={{
-        height: "100vh",
+        minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         background: "#071B36",
+        fontFamily: "Arial, sans-serif",
       }}
     >
       <form
         onSubmit={handleLogin}
         style={{
           background: "#fff",
-          padding: "30px",
+          padding: "35px",
           borderRadius: "12px",
-          width: "320px",
-          boxShadow: "0 0 15px rgba(0,0,0,0.3)",
+          width: "360px",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
         }}
       >
         <h2
@@ -51,10 +52,11 @@ function Login({ onLogin }) {
           onChange={(e) => setUsername(e.target.value)}
           style={{
             width: "100%",
-            padding: "10px",
+            padding: "12px",
             marginBottom: "15px",
-            borderRadius: "6px",
             border: "1px solid #ccc",
+            borderRadius: "8px",
+            boxSizing: "border-box",
           }}
         />
 
@@ -65,10 +67,11 @@ function Login({ onLogin }) {
           onChange={(e) => setPassword(e.target.value)}
           style={{
             width: "100%",
-            padding: "10px",
+            padding: "12px",
             marginBottom: "20px",
-            borderRadius: "6px",
             border: "1px solid #ccc",
+            borderRadius: "8px",
+            boxSizing: "border-box",
           }}
         />
 
@@ -77,11 +80,11 @@ function Login({ onLogin }) {
           style={{
             width: "100%",
             padding: "12px",
-            background: "#D4AF37",
-            color: "#071B36",
+            background: "#0B3D91",
+            color: "#fff",
             border: "none",
-            borderRadius: "6px",
-            fontWeight: "bold",
+            borderRadius: "8px",
+            fontSize: "16px",
             cursor: "pointer",
           }}
         >
@@ -90,14 +93,15 @@ function Login({ onLogin }) {
 
         <p
           style={{
+            marginTop: "20px",
             textAlign: "center",
-            marginTop: "15px",
-            fontSize: "13px",
             color: "#666",
+            fontSize: "13px",
           }}
         >
-          Username: <b>kristy</b><br />
-          Password: <b>1234</b>
+          Demo Login<br />
+          <strong>Username:</strong> kristy<br />
+          <strong>Password:</strong> 1234
         </p>
       </form>
     </div>
