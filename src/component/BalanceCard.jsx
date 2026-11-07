@@ -1,6 +1,35 @@
-import React from "react";
+
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { BankContext } from "../context/BankContext";
 
 function BalanceCard() {
+  const { t } = useTranslation();
+  const { bank } = useContext(BankContext);
+
+  // Get the currency selected in Admin.
+  const savedCurrency = bank?.customer?.currency || "GBP";
+
+const currency = ["GBP", "USD", "EUR", "CAD", "AUD"].includes(savedCurrency)
+  ? savedCurrency
+  : "GBP";
+
+  // Extract the numeric balance, regardless of its old symbol.
+  const rawBalance = String(bank?.account?.balance ?? "0");
+  const numericBalance = Number(
+    rawBalance.replace(/[^0-9.-]/g, "")
+  );
+
+  // Format the balance using the selected currency.
+  const formattedBalance = new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(
+    Number.isFinite(numericBalance) ? numericBalance : 0
+  );
+
   return (
     <div
       style={{
@@ -19,7 +48,7 @@ function BalanceCard() {
           fontSize: "14px",
         }}
       >
-        Available Balance
+        {t("availableBalance")}
       </p>
 
       <h1
@@ -30,7 +59,7 @@ function BalanceCard() {
           letterSpacing: "1px",
         }}
       >
-        £1,600,900.00
+        {formattedBalance}
       </h1>
 
       <hr
@@ -55,11 +84,11 @@ function BalanceCard() {
               fontSize: "12px",
             }}
           >
-            Account
+            {t("account")}
           </p>
 
           <h4 style={{ margin: "5px 0" }}>
-            Current Account
+            {t("currentAccount")}
           </h4>
         </div>
 
@@ -71,11 +100,11 @@ function BalanceCard() {
               fontSize: "12px",
             }}
           >
-            Number
+            {t("number")}
           </p>
 
           <h4 style={{ margin: "5px 0" }}>
-            •••• 2874
+            {bank.customer.accountNumber}
           </h4>
         </div>
       </div>
@@ -92,7 +121,7 @@ function BalanceCard() {
           fontSize: "13px",
         }}
       >
-        Dormant Account
+        {bank.customer.status} {t("account")}
       </div>
     </div>
   );

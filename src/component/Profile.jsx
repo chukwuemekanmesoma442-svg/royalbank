@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { BankContext } from "../context/BankContext";
 
 function Profile({ setPage }) {
+  const { t } = useTranslation();
+  const { bank } = useContext(BankContext);
+
   return (
     <div
       style={{
@@ -20,7 +25,7 @@ function Profile({ setPage }) {
           cursor: "pointer",
         }}
       >
-        ← Back
+        ← {t("back")}
       </button>
 
       <div
@@ -44,13 +49,16 @@ function Profile({ setPage }) {
             margin: "auto",
           }}
         >
-          KR
+          {bank.customer.name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")}
         </div>
 
-        <h2>Kirsty Rehman</h2>
+        <h2>{bank.customer.name}</h2>
 
         <p style={{ color: "#666" }}>
-          Personal Current Account
+          {t("personalCurrentAccount")}
         </p>
       </div>
 
@@ -63,11 +71,29 @@ function Profile({ setPage }) {
           boxShadow: "0 5px 15px rgba(0,0,0,.08)",
         }}
       >
-        <p><strong>Customer ID:</strong> RB102874</p>
-        <p><strong>Account Number:</strong> ****2874</p>
-        <p><strong>Sort Code:</strong> 16-28-74</p>
-        <p><strong>Currency:</strong> GBP (£)</p>
-        <p><strong>Status:</strong> Dormant</p>
+        <p>
+          <strong>{t("customerId")}:</strong> RB102874
+        </p>
+
+        <p>
+          <strong>{t("accountNumber")}:</strong>{" "}
+          {bank.customer.accountNumber}
+        </p>
+
+        <p>
+          <strong>{t("sortCode")}:</strong>{" "}
+          {bank.customer.sortCode}
+        </p>
+
+        <p>
+          <strong>{t("currency")}:</strong>{" "}
+          {bank.customer.currency}
+        </p>
+
+        <p>
+          <strong>{t("status")}:</strong>{" "}
+          {bank.customer.status}
+        </p>
       </div>
     </div>
   );

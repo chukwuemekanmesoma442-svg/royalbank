@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
+import { BankContext } from "../context/BankContext";
 
 function BankCard() {
+  const { bank } = useContext(BankContext);
+
   return (
     <div
       style={{
@@ -40,7 +43,7 @@ function BankCard() {
           fontWeight: "500",
         }}
       >
-        •••• •••• •••• 2874
+        {bank.customer.accountNumber.replace("****", "•••• •••• ••••")}
       </h2>
 
       <div
@@ -52,12 +55,16 @@ function BankCard() {
       >
         <div>
           <small style={{ opacity: 0.8 }}>CARD HOLDER</small>
-          <p style={{ margin: "5px 0 0" }}>Kirsty Rehman</p>
+          <p style={{ margin: "5px 0 0" }}>
+            {bank.customer.name}
+          </p>
         </div>
 
         <div style={{ textAlign: "right" }}>
           <small style={{ opacity: 0.8 }}>EXPIRES</small>
-          <p style={{ margin: "5px 0 0" }}>09/30</p>
+          <p style={{ margin: "5px 0 0" }}>
+            {bank.card.expiry}
+          </p>
         </div>
       </div>
 

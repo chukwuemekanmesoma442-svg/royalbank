@@ -23,7 +23,7 @@ function Notifications({ setPage }) {
         "Thank you for banking with Royal Bank Online.",
     },
   ];
-
+sd
   return (
     <div
       style={{

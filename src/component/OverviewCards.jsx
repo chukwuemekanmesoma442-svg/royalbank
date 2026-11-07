@@ -1,15 +1,36 @@
-import React from "react";
+
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { BankContext } from "../context/BankContext";
 
 function OverviewCards() {
+  const { t } = useTranslation();
+  const { bank } = useContext(BankContext);
+
+  const savedCurrency = bank?.customer?.currency || "GBP";
+
+const currency = ["GBP", "USD", "EUR", "CAD", "AUD"].includes(savedCurrency)
+  ? savedCurrency
+  : "GBP";;
+
+  const formatAmount = (amount) => {
+    return new Intl.NumberFormat("en-GB", {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  };
+
   const cards = [
     {
-      title: "Income",
-      value: "£1,600,900.00",
+      title: t("income"),
+      value: formatAmount(1600900),
       color: "#16a34a",
     },
     {
-      title: "Expenses",
-      value: "£0.00",
+      title: t("expenses"),
+      value: formatAmount(0),
       color: "#dc2626",
     },
   ];

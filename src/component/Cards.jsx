@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { BankContext } from "../context/BankContext";
 
 function Cards({ setPage }) {
+  const { t } = useTranslation();
+  const { bank } = useContext(BankContext);
+
   return (
     <div
       style={{
@@ -21,10 +26,12 @@ function Cards({ setPage }) {
           marginBottom: "20px",
         }}
       >
-        ← Back
+        ← {t("back")}
       </button>
 
-      <h2 style={{ color: "#00205B" }}>Bank Cards</h2>
+      <h2 style={{ color: "#00205B" }}>
+        {t("bankCards")}
+      </h2>
 
       <div
         style={{
@@ -35,11 +42,19 @@ function Cards({ setPage }) {
           marginTop: "20px",
         }}
       >
-        <h3>Royal Bank Platinum Debit Card</h3>
+        <h3>{bank.card.type}</h3>
 
-        <p><strong>Card Number:</strong> **** **** **** 2874</p>
-        <p><strong>Expiry:</strong> 12/11</p>
-        <p><strong>Status:</strong> Dormant</p>
+        <p>
+          <strong>{t("cardNumber")}:</strong> {bank.customer.accountNumber}
+        </p>
+
+        <p>
+          <strong>{t("expiry")}:</strong> {bank.card.expiry}
+        </p>
+
+        <p>
+          <strong>{t("status")}:</strong> {bank.card.status}
+        </p>
 
         <div
           style={{
@@ -50,7 +65,9 @@ function Cards({ setPage }) {
             color: "#8a6d3b",
           }}
         >
-          This card is inactive because the account is dormant. Complete Security Code verification to restore card services.
+          {bank.card.status === "Active"
+            ? "Your card is active and ready for use."
+            : "This card is inactive because the account is dormant. Complete Security Code verification to restore card services."}
         </div>
 
         <button
@@ -67,7 +84,7 @@ function Cards({ setPage }) {
             fontWeight: "bold",
           }}
         >
-          Verify Security Code
+          {t("verifySecurityCode")}
         </button>
       </div>
     </div>

@@ -1,7 +1,10 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { FiAlertTriangle } from "react-icons/fi";
 
 function DormantNotice() {
+  const { t } = useTranslation();
+
   return (
     <div
       style={{
@@ -29,7 +32,7 @@ function DormantNotice() {
             fontSize: "18px",
           }}
         >
-          Dormant Account Notice
+          {t("dormantAccountNotice")}
         </h3>
 
         <p
@@ -40,9 +43,7 @@ function DormantNotice() {
             fontSize: "14px",
           }}
         >
-          Your account has been placed in a dormant state due to
-          inactivity. To restore full banking services, please
-          complete the security verification process.
+          {t("dormantNoticeMessage")}
         </p>
       </div>
     </div>

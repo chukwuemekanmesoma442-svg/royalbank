@@ -1,0 +1,166 @@
+{
+  "royalBank": "Royal Bank",
+
+  "login": "Log ind",
+  "username": "Brugernavn",
+  "password": "Adgangskode",
+  "logout": "Log ud",
+  "loggedOut": "Logget ud",
+
+  "dashboard": "Kontrolpanel",
+  "transactions": "Transaktioner",
+  "transfer": "Overførsel",
+  "payments": "Betalinger",
+  "cards": "Kort",
+  "profile": "Profil",
+  "notifications": "Meddelelser",
+  "settings": "Indstillinger",
+  "customerSupport": "Kundesupport",
+  "customerService": "Kundeservice",
+  "security": "Sikkerhed",
+  "securityCode": "Sikkerhedskode",
+
+  "back": "Tilbage",
+  "backToDashboard": "Tilbage til kontrolpanel",
+  "continue": "Fortsæt",
+  "continueTransfer": "Fortsæt overførsel",
+  "confirm": "Bekræft",
+  "close": "Luk",
+  "verify": "Bekræft",
+  "verifySecurityCode": "Bekræft sikkerhedskode",
+
+  "goodDay": "Goddag",
+
+  "availableBalance": "Tilgængelig saldo",
+  "balance": "Saldo",
+  "income": "Indkomst",
+  "expenses": "Udgifter",
+
+  "account": "Konto",
+  "accountNumber": "Kontonummer",
+  "accountHolder": "Kontohaver",
+  "accountSummary": "Kontooversigt",
+  "accountSettings": "Kontoindstillinger",
+  "accountStatus": "Kontostatus",
+
+  "currentAccount": "Lønkonto",
+  "personalCurrentAccount": "Personlig lønkonto",
+
+  "customerId": "Kunde-ID",
+
+  "status": "Status",
+  "dormant": "Inaktiv",
+  "dormantAccount": "Inaktiv konto",
+  "dormantAccountNotice": "Meddelelse om inaktiv konto",
+
+  "sortCode": "Registreringsnummer",
+  "currency": "Valuta",
+  "number": "Nummer",
+
+  "quickActions": "Hurtige handlinger",
+
+  "recentTransactions": "Seneste transaktioner",
+  "transactionHistory": "Royal Bank transaktionshistorik",
+  "fullTransactionHistory": "Fuld transaktionshistorik",
+
+  "lastActivity": "Seneste aktivitet",
+
+  "search": "Søg",
+
+  "thankYouBanking": "Tak fordi du bruger Royal Bank.",
+  "sessionEnded": "Din session er afsluttet.",
+  "bankTransfer": "Bankoverførsel",
+  "recipientName": "Modtagers navn",
+  "bankName": "Banknavn",
+  "amount": "Beløb (£)",
+  "paymentReference": "Betalingsreference",
+  "transferFee": "Overførselsgebyr",
+
+  "bankCards": "Bankkort",
+  "platinumDebitCard": "Royal Bank Platinum Debitkort",
+  "cardHolder": "Kortindehaver",
+  "cardNumber": "Kortnummer",
+  "expiry": "Udløb",
+  "expires": "Udløber",
+
+  "securityVerification": "Sikkerhedsbekræftelse",
+  "enterSecurityCode": "Indtast venligst din sikkerhedskode.",
+  "invalidSecurityCode": "Ugyldig sikkerhedskode",
+  "verifyingIdentity": "Bekræfter din identitet... Vent venligst.",
+
+  "securityVerificationRequired": "Sikkerhedsbekræftelse påkrævet",
+  "securityVerificationMessage": "Fuldfør din sikkerhedsbekræftelse for at genaktivere din konto.",
+
+  "loginAlert": "Loginadvarsel",
+  "loginAlertMessage": "Et vellykket login til din netbank er blevet registreret.",
+
+  "welcome": "Velkommen",
+  "welcomeMessage": "Tak fordi du bruger Royal Bank Online.",
+
+  "helpCentre": "Royal Bank Hjælpecenter",
+  "supportMessage": "Hvis du har brug for hjælp til din konto, bedes du kontakte vores kundesupport.",
+
+  "dormantNoticeMessage": "Din konto er blevet markeret som inaktiv på grund af manglende aktivitet. For at genaktivere alle banktjenester skal du gennemføre sikkerhedsbekræftelsen eller kontakte banken via e-mail eller besøge den nærmeste filial for yderligere oplysninger.",
+
+  "changePassword": "Skift adgangskode",
+  "notificationPreferences": "Meddelelsesindstillinger",
+  "darkMode": "Mørk tilstand",
+  "language": "Sprog",
+  "englishUK": "Engelsk (UK)",
+  "twoFactorAuthentication": "To-faktor-godkendelse",
+  "trustedDevices": "Betroede enheder",
+  "privacySecurity": "Privatliv og sikkerhed",
+  "saveChanges": "Gem ændringer",
+  "propertyRental": "Ejendomsudlejning",
+  "businessIncome": "Forretningsindtægt",
+  "investmentReturn": "Investeringsafkast",
+  "investmentIncome": "Investeringsindtægt",
+  "salaryCredit": "Lønindbetaling",
+  "councilTax": "Kommuneskat",
+  "electricityBill": "Elregning",
+  "britishGas": "British Gas",
+  "tescoSupermarket": "Tesco Supermarked",
+  "mortgagePayment": "Realkreditbetaling",
+  "interestCredit": "Renteindtægt",
+  "atmWithdrawal": "Kontanthævning i hæveautomat",
+  "dividendPayment": "Udbyttebetaling",
+  "fuelPurchase": "Brændstofkøb",
+  "waterBill": "Vandregning",
+  "carInsurance": "Bilforsikring",
+  "propertySale": "Ejendomssalg",
+  "propertyPurchase": "Ejendomskøb",
+  "vehiclePurchase": "Køretøjskøb",
+  "vehicleInsurance": "Køretøjsforsikring",
+  "openingDeposit": "Startindskud",
+  "accountFunding": "Kontofinansiering",
+  "initialSavingsDeposit": "Første opsparingsindskud",
+  "accountActivation": "Kontoaktivering",
+  "royalBankAccountOpened": "Royal Bank-konto åbnet",
+  "yearEndBonus": "Årsslutbonus",
+  "houseRenovation": "Husrenovering",
+
+  "cardDormantMessage": "Dette kort er inaktivt, fordi kontoen er inaktiv. Gennemfør sikkerhedskodebekræftelsen for at genaktivere korttjenester.",
+
+  "sendMoney": "Send penge",
+  "deposit": "Indbetaling",
+  "withdrawal": "Hævning",
+
+  "confirmTransfer": "Bekræft overførsel",
+  "cancel": "Annuller",
+
+  "success": "Succes",
+  "error": "Fejl",
+
+  "yes": "Ja",
+  "no": "Nej",
+
+  "loading": "Indlæser...",
+  "processing": "Behandler...",
+
+  "email": "E-mail",
+  "phone": "Telefon",
+
+  "pleaseWait": "Vent venligst...",
+  "online": "Online",
+  "offline": "Offline"
+}

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   FiSend,
   FiCreditCard,
@@ -7,28 +8,30 @@ import {
 } from "react-icons/fi";
 
 function QuickAction({ setPage }) {
+  const { t } = useTranslation();
+
   const actions = [
-  {
-    icon: <FiSend size={22} />,
-    title: "Transfer",
-    page: "transfer",
-  },
-  {
-    icon: <FiDollarSign size={22} />,
-    title: "Payments",
-    page: "transactions",
-  },
-  {
-    icon: <FiCreditCard size={22} />,
-    title: "Cards",
-    page: "cards",
-  },
-  {
-    icon: <FiShield size={22} />,
-    title: "Security Code",
-    page: "security",
-  },
-];
+    {
+      icon: <FiSend size={22} />,
+      title: t("transfer"),
+      page: "transfer",
+    },
+    {
+      icon: <FiDollarSign size={22} />,
+      title: t("payments"),
+      page: "transactions",
+    },
+    {
+      icon: <FiCreditCard size={22} />,
+      title: t("cards"),
+      page: "cards",
+    },
+    {
+      icon: <FiShield size={22} />,
+      title: t("securityCode"),
+      page: "security",
+    },
+  ];
 
   return (
     <div style={{ marginTop: "25px" }}>
@@ -38,7 +41,7 @@ function QuickAction({ setPage }) {
           marginBottom: "15px",
         }}
       >
-        Quick Actions
+        {t("quickActions")}
       </h3>
 
       <div
@@ -50,34 +53,18 @@ function QuickAction({ setPage }) {
       >
         {actions.map((item, index) => (
           <div
-  key={index}
- onClick={() => {
-  if (item.title === "Transfer") {
-    setPage("transfer");
-  }
-
-  if (item.title === "Payments") {
-    setPage("transactions");
-  }
-
-  if (item.title === "Cards") {
-    setPage("cards");
-  }
-
-  if (item.title === "Security Code") {
-    setPage("security");
-  }
-}}
-  style={{
-    background: "#fff",
-    borderRadius: "18px",
-    padding: "20px",
-    textAlign: "center",
-    boxShadow: "0 5px 15px rgba(0,0,0,.08)",
-    cursor: "pointer",
-    transition: ".2s",
-  }}
->
+            key={index}
+            onClick={() => setPage(item.page)}
+            style={{
+              background: "#fff",
+              borderRadius: "18px",
+              padding: "20px",
+              textAlign: "center",
+              boxShadow: "0 5px 15px rgba(0,0,0,.08)",
+              cursor: "pointer",
+              transition: ".2s",
+            }}
+          >
             <div
               style={{
                 color: "#005EB8",

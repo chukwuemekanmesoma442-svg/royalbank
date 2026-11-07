@@ -1,6 +1,23 @@
-import React from "react";
+
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { BankContext } from "../context/BankContext";
 
 function AccountSummary() {
+  const { t } = useTranslation();
+  const { bank } = useContext(BankContext);
+
+  const currencyOptions = {
+    GBP: "GBP (£)",
+    USD: "USD ($)",
+    EUR: "EUR (€)",
+    CAD: "CAD (C$)",
+    AUD: "AUD (A$)",
+  };
+
+  const selectedCurrency =
+    currencyOptions[bank?.customer?.currency] || "GBP (£)";
+
   return (
     <div
       style={{
@@ -12,7 +29,7 @@ function AccountSummary() {
       }}
     >
       <h3 style={{ marginTop: 0 }}>
-        Account Summary
+        {t("accountSummary")}
       </h3>
 
       <div
@@ -20,25 +37,27 @@ function AccountSummary() {
           display: "flex",
           justifyContent: "space-between",
           marginTop: "18px",
+          gap: "15px",
+          flexWrap: "wrap",
         }}
       >
         <div>
           <small style={{ color: "#777" }}>
-            Sort Code
+            {t("sortCode")}
           </small>
 
           <h4 style={{ margin: "6px 0" }}>
-            16-28-74
+            {bank?.customer?.sortCode || "—"}
           </h4>
         </div>
 
         <div>
           <small style={{ color: "#777" }}>
-            Currency
+            {t("currency")}
           </small>
 
           <h4 style={{ margin: "6px 0" }}>
-            GBP (£)
+            {selectedCurrency}
           </h4>
         </div>
       </div>

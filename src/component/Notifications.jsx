@@ -1,28 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { BankContext } from "../context/BankContext";
 
 function Notifications({ setPage }) {
-  const notifications = [
-    {
-      title: "Security Verification Required",
-      message:
-        "Complete your security verification to reactivate your account.",
-    },
-    {
-      title: "Dormant Account Notice",
-      message:
-        "Your account remains dormant until verification is completed,please contact our customer support via gmail.",
-    },
-    {
-      title: "Login Alert",
-      message:
-        "A successful login to your online banking account was detected.",
-    },
-    {
-      title: "Welcome",
-      message:
-        "Thank you for banking with Royal Bank Online.",
-    },
-  ];
+  const { t } = useTranslation();
+  const { bank } = useContext(BankContext);
 
   return (
     <div
@@ -43,14 +25,19 @@ function Notifications({ setPage }) {
           cursor: "pointer",
         }}
       >
-        ← Back
+        ← {t("back")}
       </button>
 
-      <h2 style={{ marginTop: "25px", color: "#00205B" }}>
-        Notifications
+      <h2
+        style={{
+          marginTop: "25px",
+          color: "#00205B",
+        }}
+      >
+        {t("notifications")}
       </h2>
 
-      {notifications.map((item, index) => (
+      {bank.notifications.map((item, index) => (
         <div
           key={index}
           style={{
@@ -61,7 +48,9 @@ function Notifications({ setPage }) {
             boxShadow: "0 3px 10px rgba(0,0,0,.08)",
           }}
         >
-          <h4 style={{ margin: 0 }}>{item.title}</h4>
+          <h4 style={{ margin: 0 }}>
+            {item.title}
+          </h4>
 
           <p
             style={{

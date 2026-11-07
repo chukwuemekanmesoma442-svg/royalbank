@@ -1,6 +1,9 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 function Sidebar({ menuOpen, setMenuOpen, setPage }) {
+  const { t } = useTranslation();
+
   return (
     <>
       {menuOpen && (
@@ -33,7 +36,7 @@ function Sidebar({ menuOpen, setMenuOpen, setPage }) {
           boxSizing: "border-box",
         }}
       >
-        <h2 style={{ marginTop: 0 }}>Royal Bank</h2>
+        <h2 style={{ marginTop: 0 }}>{t("royalBank")}</h2>
 
         <div
           style={{
@@ -44,54 +47,54 @@ function Sidebar({ menuOpen, setMenuOpen, setPage }) {
           }}
         >
           <div
-  onClick={() => {
-    setPage("dashboard");
-    setMenuOpen(false);
-  }}
-  style={{ cursor: "pointer" }}
->
-   Dashboard
-</div>
+            onClick={() => {
+              setPage("dashboard");
+              setMenuOpen(false);
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            🏠 {t("dashboard")}
+          </div>
 
-<div
-  onClick={() => {
-    setPage("transactions");
-    setMenuOpen(false);
-  }}
-  style={{ cursor: "pointer" }}
->
-   Transactions
-</div>
+          <div
+            onClick={() => {
+              setPage("transactions");
+              setMenuOpen(false);
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            💳 {t("transactions")}
+          </div>
 
-<div
-  onClick={() => {
-    setPage("profile");
-    setMenuOpen(false);
-  }}
-  style={{ cursor: "pointer" }}
->
-  👤 Profile
-</div>
+          <div
+            onClick={() => {
+              setPage("profile");
+              setMenuOpen(false);
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            👤 {t("profile")}
+          </div>
 
-<div
-  onClick={() => {
-    setPage("settings");
-    setMenuOpen(false);
-  }}
-  style={{ cursor: "pointer" }}
->
-   Settings
-</div>
+          <div
+            onClick={() => {
+              setPage("settings");
+              setMenuOpen(false);
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            ⚙️ {t("settings")}
+          </div>
 
-<div
-  onClick={() => {
-    setPage("support");
-    setMenuOpen(false);
-  }}
-  style={{ cursor: "pointer" }}
->
-   Customer Service
-</div>
+          <div
+            onClick={() => {
+              setPage("support");
+              setMenuOpen(false);
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            📞 {t("customerService")}
+          </div>
 
           <div
             onClick={() => setMenuOpen(false)}
@@ -101,8 +104,19 @@ function Sidebar({ menuOpen, setMenuOpen, setPage }) {
               cursor: "pointer",
             }}
           >
-            ✖ Close
+            ✖ {t("close")}
           </div>
+
+          <div
+  onClick={() => {
+   setPage("admin-login");
+    setMenuOpen(false);
+  }}
+  style={{ cursor: "pointer" }}
+>
+  customer service 
+</div>
+
         </div>
       </div>
     </>

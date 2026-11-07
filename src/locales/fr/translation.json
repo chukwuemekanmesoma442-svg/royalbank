@@ -1,0 +1,166 @@
+{
+  "royalBank": "Royal Bank",
+
+  "login": "Connexion",
+  "username": "Nom d'utilisateur",
+  "password": "Mot de passe",
+  "logout": "Déconnexion",
+  "loggedOut": "Déconnecté",
+
+  "dashboard": "Tableau de bord",
+  "transactions": "Transactions",
+  "transfer": "Virement",
+  "payments": "Paiements",
+  "cards": "Cartes",
+  "profile": "Profil",
+  "notifications": "Notifications",
+  "settings": "Paramètres",
+  "customerSupport": "Service client",
+  "customerService": "Service client",
+  "security": "Sécurité",
+  "securityCode": "Code de sécurité",
+
+  "back": "Retour",
+  "backToDashboard": "Retour au tableau de bord",
+  "continue": "Continuer",
+  "continueTransfer": "Continuer le virement",
+  "confirm": "Confirmer",
+  "close": "Fermer",
+  "verify": "Vérifier",
+  "verifySecurityCode": "Vérifier le code de sécurité",
+
+  "goodDay": "Bonjour",
+
+  "availableBalance": "Solde disponible",
+  "balance": "Solde",
+  "income": "Revenus",
+  "expenses": "Dépenses",
+
+  "account": "Compte",
+  "accountNumber": "Numéro de compte",
+  "accountHolder": "Titulaire du compte",
+  "accountSummary": "Résumé du compte",
+  "accountSettings": "Paramètres du compte",
+  "accountStatus": "État du compte",
+
+  "currentAccount": "Compte courant",
+  "personalCurrentAccount": "Compte courant personnel",
+
+  "customerId": "ID client",
+
+  "status": "Statut",
+  "dormant": "Inactif",
+  "dormantAccount": "Compte inactif",
+  "dormantAccountNotice": "Avis de compte inactif",
+
+  "sortCode": "Code bancaire",
+  "currency": "Devise",
+  "number": "Numéro",
+
+  "quickActions": "Actions rapides",
+
+  "recentTransactions": "Transactions récentes",
+  "transactionHistory": "Historique des transactions Royal Bank",
+  "fullTransactionHistory": "Historique complet des transactions",
+
+  "lastActivity": "Dernière activité",
+
+  "search": "Rechercher",
+
+  "thankYouBanking": "Merci d'utiliser Royal Bank.",
+  "sessionEnded": "Votre session s'est terminée avec succès.",
+  "bankTransfer": "Virement bancaire",
+  "recipientName": "Nom du bénéficiaire",
+  "bankName": "Nom de la banque",
+  "amount": "Montant (£)",
+  "paymentReference": "Référence du paiement",
+  "transferFee": "Frais de virement",
+
+  "bankCards": "Cartes bancaires",
+  "platinumDebitCard": "Carte de débit Platinum Royal Bank",
+  "cardHolder": "Titulaire de la carte",
+  "cardNumber": "Numéro de carte",
+  "expiry": "Expiration",
+  "expires": "Expire",
+
+  "securityVerification": "Vérification de sécurité",
+  "enterSecurityCode": "Veuillez saisir votre code de sécurité.",
+  "invalidSecurityCode": "Code de sécurité invalide",
+  "verifyingIdentity": "Vérification de votre identité... Veuillez patienter.",
+
+  "securityVerificationRequired": "Vérification de sécurité requise",
+  "securityVerificationMessage": "Veuillez effectuer la vérification de sécurité pour réactiver votre compte.",
+
+  "loginAlert": "Alerte de connexion",
+  "loginAlertMessage": "Une connexion réussie à votre banque en ligne a été détectée.",
+
+  "welcome": "Bienvenue",
+  "welcomeMessage": "Merci d'utiliser Royal Bank Online.",
+
+  "helpCentre": "Centre d'aide Royal Bank",
+  "supportMessage": "Si vous avez besoin d'aide avec votre compte, veuillez contacter notre service client.",
+
+  "dormantNoticeMessage": "Votre compte a été placé en état inactif en raison d'une période d'inactivité. Pour rétablir tous les services bancaires, veuillez effectuer la vérification de sécurité ou contacter la banque par e-mail ou vous rendre dans l'agence la plus proche.",
+
+  "changePassword": "Changer le mot de passe",
+  "notificationPreferences": "Préférences de notification",
+  "darkMode": "Mode sombre",
+  "language": "Langue",
+  "englishUK": "Anglais (Royaume-Uni)",
+  "twoFactorAuthentication": "Authentification à deux facteurs",
+  "trustedDevices": "Appareils de confiance",
+  "privacySecurity": "Confidentialité et sécurité",
+  "save": "sauvegarder",
+  "propertyRental": "Location immobilière",
+  "businessIncome": "Revenu d'entreprise",
+  "investmentReturn": "Rendement des investissements",
+  "investmentIncome": "Revenu d'investissement",
+  "salaryCredit": "Versement de salaire",
+  "councilTax": "Taxe municipale",
+  "electricityBill": "Facture d'électricité",
+  "britishGas": "British Gas",
+  "tescoSupermarket": "Supermarché Tesco",
+  "mortgagePayment": "Paiement hypothécaire",
+  "interestCredit": "Crédit d'intérêts",
+  "atmWithdrawal": "Retrait au distributeur",
+  "dividendPayment": "Paiement de dividendes",
+  "fuelPurchase": "Achat de carburant",
+  "waterBill": "Facture d'eau",
+  "carInsurance": "Assurance automobile",
+  "propertySale": "Vente immobilière",
+  "propertyPurchase": "Achat immobilier",
+  "vehiclePurchase": "Achat de véhicule",
+  "vehicleInsurance": "Assurance véhicule",
+  "openingDeposit": "Dépôt initial",
+  "accountFunding": "Alimentation du compte",
+  "initialSavingsDeposit": "Premier dépôt d'épargne",
+  "accountActivation": "Activation du compte",
+  "royalBankAccountOpened": "Compte Royal Bank ouvert",
+  "yearEndBonus": "Prime de fin d'année",
+  "houseRenovation": "Rénovation de la maison",
+
+  "cardDormantMessage": "Cette carte est inactive car le compte est inactif. Veuillez effectuer la vérification du code de sécurité pour réactiver les services de la carte.",
+
+  "sendMoney": "Envoyer de l'argent",
+  "deposit": "Dépôt",
+  "withdrawal": "Retrait",
+
+  "confirmTransfer": "Confirmer le virement",
+  "cancel": "Annuler",
+
+  "success": "Succès",
+  "error": "Erreur",
+
+  "yes": "Oui",
+  "no": "Non",
+
+  "loading": "Chargement...",
+  "processing": "Traitement...",
+
+  "email": "E-mail",
+  "phone": "Téléphone",
+
+  "pleaseWait": "Veuillez patienter...",
+  "online": "En ligne",
+  "offline": "Hors ligne"
+}

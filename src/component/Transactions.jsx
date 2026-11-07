@@ -1,6 +1,8 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 function Transactions({ setPage }) {
+  const { t } = useTranslation();
   const transactions = [
     {
       date: "18 Dec 2011",
@@ -663,11 +665,11 @@ paddingBottom: "80px",
           cursor: "pointer",
         }}
       >
-        ← Back
+        ← {t("back")}
       </button>
 
       <h2 style={{ color: "#00205B", marginTop: "20px" }}>
-        Royal Bank Transaction History
+        {t("transactionHistory")}
       </h2>
 
       <div
@@ -679,11 +681,11 @@ paddingBottom: "80px",
           boxShadow: "0 3px 12px rgba(0,0,0,.08)",
         }}
       >
-        <p><strong>Account Holder:</strong> Kirsty Rehman</p>
-        <p><strong>Account:</strong> ****2874</p>
-        <p><strong>Status:</strong> Dormant</p>
-        <p><strong>Last Activity:</strong> 18 December 2011</p>
-        <p><strong>Available Balance:</strong> £1,600,900.00</p>
+        <p><strong>{t("accountHolder")}:</strong> Kirsty Rehman</p>
+        <p><strong>{t("account")}:</strong> ****2874</p>
+        <p><strong>{t("status")}:</strong>{t("dormant")}</p>
+        <p><strong>{t("lastActivity")}:</strong> 18 December 2011</p>
+        <p><strong>{t("availableBalance")}:</strong> £1,600,900.00</p>
       </div>
       <h2
   style={{
@@ -693,7 +695,7 @@ paddingBottom: "80px",
     textAlign: "center",
   }}
 >
-  Full Transaction History
+  {t("fullTransactionHistory")}
 </h2>
 
       {transactions.map((item, index) => (
@@ -730,7 +732,7 @@ paddingBottom: "80px",
               color: "#666",
             }}
           >
-            Balance: {item.balance}
+           {t("balance")}: {item.balance}
           </small>
         </div>
       ))}

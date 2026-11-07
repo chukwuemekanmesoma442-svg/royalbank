@@ -1,4 +1,9 @@
+import React from "react";
+import { useTranslation } from "react-i18next";
+
 function Logout() {
+  const { t } = useTranslation();
+
   return (
     <div
       style={{
@@ -21,15 +26,11 @@ function Logout() {
           width: "400px",
         }}
       >
-        <h1>👋 Logged Out</h1>
+        <h1>👋 {t("loggedOut")}</h1>
 
-        <p>
-          Thank you for banking with Royal Bank.
-        </p>
+        <p>{t("thankYouBanking")}</p>
 
-        <p>
-          Your session has ended successfully.
-        </p>
+        <p>{t("sessionEnded")}</p>
       </div>
     </div>
   );
