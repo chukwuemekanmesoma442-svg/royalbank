@@ -4,7 +4,6 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  // Keep your existing Firebase configuration values here.
   apiKey: "AIzaSyAhnAnBiLVTA1Ce5dWb-Tz4J8f7gFMOK1A",
   authDomain: "royal-bank-8d7bc.firebaseapp.com",
   projectId: "royal-bank-8d7bc",
@@ -20,3 +19,11 @@ const app = getApps().length
 
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+
+// Separate authentication instance for creating customer accounts.
+// This prevents customer creation from signing out the Admin.
+const customerApp =
+  getApps().find((item) => item.name === "customerAccounts") ||
+  initializeApp(firebaseConfig, "customerAccounts");
+
+export const customerAuth = getAuth(customerApp);

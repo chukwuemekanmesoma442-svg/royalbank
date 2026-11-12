@@ -5,22 +5,30 @@ import { BankContext } from "../context/BankContext";
 
 function BalanceCard() {
   const { t } = useTranslation();
-  const { bank } = useContext(BankContext);
 
-  // Get the currency selected in Admin.
-  const savedCurrency = bank?.customer?.currency || "GBP";
+  const {
+    selectedCustomer,
+    isAdmin,
+  } = useContext(BankContext);
 
-const currency = ["GBP", "USD", "EUR", "CAD", "AUD"].includes(savedCurrency)
-  ? savedCurrency
-  : "GBP";
+  // Use only the selected customer's account.
+  const customerData = selectedCustomer;
 
-  // Extract the numeric balance, regardless of its old symbol.
-  const rawBalance = String(bank?.account?.balance ?? "0");
+  const customer = customerData?.customer || {};
+  const account = customerData?.account || {};
+
+  const savedCurrency = account.currency || customer.currency || "GBP";
+
+  const currency = ["GBP", "USD", "EUR", "CAD", "AUD"].includes(savedCurrency)
+    ? savedCurrency
+    : "GBP";
+
+  const rawBalance = String(account.balance ?? "0");
+
   const numericBalance = Number(
     rawBalance.replace(/[^0-9.-]/g, "")
   );
 
-  // Format the balance using the selected currency.
   const formattedBalance = new Intl.NumberFormat("en-GB", {
     style: "currency",
     currency,
@@ -29,6 +37,24 @@ const currency = ["GBP", "USD", "EUR", "CAD", "AUD"].includes(savedCurrency)
   }).format(
     Number.isFinite(numericBalance) ? numericBalance : 0
   );
+
+  if (!customerData) {
+    return (
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: "16px",
+          padding: "20px",
+          marginTop: "20px",
+          color: "#555",
+        }}
+      >
+        {isAdmin
+          ? "Select a customer to view their balance."
+          : "Your account information is unavailable."}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -41,13 +67,7 @@ const currency = ["GBP", "USD", "EUR", "CAD", "AUD"].includes(savedCurrency)
         boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
       }}
     >
-      <p
-        style={{
-          margin: 0,
-          opacity: 0.8,
-          fontSize: "14px",
-        }}
-      >
+      <p style={{ margin: 0, opacity: 0.8, fontSize: "14px" }}>
         {t("availableBalance")}
       </p>
 
@@ -70,41 +90,22 @@ const currency = ["GBP", "USD", "EUR", "CAD", "AUD"].includes(savedCurrency)
         }}
       />
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div>
-          <p
-            style={{
-              margin: 0,
-              opacity: 0.7,
-              fontSize: "12px",
-            }}
-          >
+          <p style={{ margin: 0, opacity: 0.7, fontSize: "12px" }}>
             {t("account")}
           </p>
-
           <h4 style={{ margin: "5px 0" }}>
             {t("currentAccount")}
           </h4>
         </div>
 
         <div style={{ textAlign: "right" }}>
-          <p
-            style={{
-              margin: 0,
-              opacity: 0.7,
-              fontSize: "12px",
-            }}
-          >
+          <p style={{ margin: 0, opacity: 0.7, fontSize: "12px" }}>
             {t("number")}
           </p>
-
           <h4 style={{ margin: "5px 0" }}>
-            {bank.customer.accountNumber}
+            {account.accountNumber || customer.accountNumber || "—"}
           </h4>
         </div>
       </div>
@@ -121,7 +122,7 @@ const currency = ["GBP", "USD", "EUR", "CAD", "AUD"].includes(savedCurrency)
           fontSize: "13px",
         }}
       >
-        {bank.customer.status} {t("account")}
+        {account.status || customer.status || "Active"} {t("account")}
       </div>
     </div>
   );

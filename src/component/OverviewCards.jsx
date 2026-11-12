@@ -5,13 +5,21 @@ import { BankContext } from "../context/BankContext";
 
 function OverviewCards() {
   const { t } = useTranslation();
-  const { bank } = useContext(BankContext);
 
-  const savedCurrency = bank?.customer?.currency || "GBP";
+  const { selectedCustomer } = useContext(BankContext);
 
-const currency = ["GBP", "USD", "EUR", "CAD", "AUD"].includes(savedCurrency)
-  ? savedCurrency
-  : "GBP";;
+  // Use only the selected customer's information.
+  const customerData = selectedCustomer;
+
+  const account = customerData?.account || {};
+
+  const savedCurrency = account.currency || "GBP";
+
+  const currency = ["GBP", "USD", "EUR", "CAD", "AUD"].includes(savedCurrency)
+    ? savedCurrency
+    : "GBP";
+
+  const transactions = customerData?.recentTransactions || [];
 
   const formatAmount = (amount) => {
     return new Intl.NumberFormat("en-GB", {
@@ -22,15 +30,35 @@ const currency = ["GBP", "USD", "EUR", "CAD", "AUD"].includes(savedCurrency)
     }).format(amount);
   };
 
+  const income = transactions.reduce((total, transaction) => {
+    const amount = Number(
+      String(transaction.amount || "").replace(/[^0-9.-]/g, "")
+    );
+
+    return String(transaction.amount || "").trim().startsWith("+")
+      ? total + Math.abs(amount)
+      : total;
+  }, 0);
+
+  const expenses = transactions.reduce((total, transaction) => {
+    const amount = Number(
+      String(transaction.amount || "").replace(/[^0-9.-]/g, "")
+    );
+
+    return String(transaction.amount || "").trim().startsWith("-")
+      ? total + Math.abs(amount)
+      : total;
+  }, 0);
+
   const cards = [
     {
       title: t("income"),
-      value: formatAmount(1600900),
+      value: formatAmount(income),
       color: "#16a34a",
     },
     {
       title: t("expenses"),
-      value: formatAmount(0),
+      value: formatAmount(expenses),
       color: "#dc2626",
     },
   ];
@@ -48,7 +76,7 @@ const currency = ["GBP", "USD", "EUR", "CAD", "AUD"].includes(savedCurrency)
         <div
           key={card.title}
           style={{
-            background: "#fff",
+            background: "#123B65",
             borderRadius: "18px",
             padding: "18px",
             boxShadow: "0 5px 15px rgba(0,0,0,.08)",

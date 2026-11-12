@@ -1,16 +1,20 @@
 
-import React, { useContext, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
 import { BankContext } from "../context/BankContext";
 import { db } from "../firebase";
+import CustomerManager from "./CustomerManager";
 
 import {
   doc,
-  setDoc,
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
 
-// Available app currencies
 const currencyOptions = [
   { code: "GBP", label: "British Pound (£)" },
   { code: "USD", label: "US Dollar ($)" },
@@ -21,131 +25,84 @@ const currencyOptions = [
 
 function Admin({ setPage }) {
   const {
-    bank,
-    setBank,
+    selectedCustomer,
+    selectedCustomerId,
+    saveCustomer,
     transfers = [],
     loadingTransfers,
   } = useContext(BankContext);
 
-  const [name, setName] = useState(bank.customer.name);
-  const [accountNumber, setAccountNumber] = useState(
-    bank.customer.accountNumber
-  );
-  const [sortCode, setSortCode] = useState(
-    bank.customer.sortCode
-  );
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [sortCode, setSortCode] = useState("");
+  const [currency, setCurrency] = useState("GBP");
+  const [balance, setBalance] = useState("");
+  const [status, setStatus] = useState("Active");
 
-  const [currency, setCurrency] = useState(
-    currencyOptions.some(
-      (item) => item.code === bank.customer.currency
-    )
-      ? bank.customer.currency
-      : "GBP"
-  );
+  const [cardType, setCardType] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardStatus, setCardStatus] = useState("Inactive");
 
-  const [balance, setBalance] = useState(bank.account.balance);
-  const [status, setStatus] = useState(bank.customer.status);
-
-  const [cardType, setCardType] = useState(bank.card.type);
-  const [cardExpiry, setCardExpiry] = useState(bank.card.expiry);
-  const [cardStatus, setCardStatus] = useState(bank.card.status);
+  const [securityCode, setSecurityCode] = useState("");
 
   const [notificationTitle, setNotificationTitle] = useState("");
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationPriority, setNotificationPriority] =
     useState("Normal");
 
-  const [securityCode, setSecurityCode] = useState(
-    bank.security?.code || ""
-  );
-
+  const [saving, setSaving] = useState(false);
   const [updatingTransfer, setUpdatingTransfer] = useState(null);
 
-  // Save bank information to Firebase.
-  const saveToFirebase = async (newBank) => {
-    try {
-      const { login, ...safeBank } = newBank;
-
-      await setDoc(doc(db, "bank", "royalbank"), safeBank);
-
-      setBank(newBank);
-      alert("Saved successfully!");
-    } catch (error) {
-      console.error("Firestore Save Error:", error);
-      alert("Failed to save: " + error.message);
+  // Load the selected customer's details into the form.
+  useEffect(() => {
+    if (!selectedCustomer) {
+      setName("");
+      setEmail("");
+      setAccountNumber("");
+      setSortCode("");
+      setCurrency("GBP");
+      setBalance("");
+      setStatus("Active");
+      setCardType("");
+      setCardExpiry("");
+      setCardStatus("Inactive");
+      setSecurityCode("");
+      return;
     }
-  };
 
-  // Change transfer status.
-  const changeTransferStatus = async (transferId, newStatus) => {
-    try {
-      setUpdatingTransfer(transferId);
+    const customer = selectedCustomer.customer || {};
+    const account = selectedCustomer.account || {};
+    const card = selectedCustomer.card || {};
+    const security = selectedCustomer.security || {};
 
-      await updateDoc(
-        doc(db, "bank", "royalbank", "transfers", transferId),
-        { status: newStatus }
-      );
+    setName(customer.name || "");
+    setEmail(selectedCustomer.email || "");
+    setAccountNumber(customer.accountNumber || "");
+    setSortCode(customer.sortCode || "");
 
-      alert(`Transfer status updated to ${newStatus}.`);
-    } catch (error) {
-      console.error("Transfer Update Error:", error);
-      alert("Could not update transfer: " + error.message);
-    } finally {
-      setUpdatingTransfer(null);
-    }
-  };
-
-  // Delete a demo transfer receipt.
-  const deleteTransfer = async (transferId) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to permanently delete this demo receipt?"
+    setCurrency(
+      currencyOptions.some(
+        (item) => item.code === customer.currency
+      )
+        ? customer.currency
+        : "GBP"
     );
 
-    if (!confirmed) return;
+    setBalance(account.balance ?? "");
+    setStatus(account.status || "Active");
 
-    try {
-      setUpdatingTransfer(transferId);
+    setCardType(card.type || "");
+    setCardExpiry(card.expiry || "");
+    setCardStatus(card.status || "Inactive");
 
-      await deleteDoc(
-        doc(db, "bank", "royalbank", "transfers", transferId)
-      );
-
-      alert("Demo receipt deleted successfully!");
-    } catch (error) {
-      console.error("Delete Transfer Error:", error);
-      alert(
-        "Could not delete receipt.\n" +
-        error.code + ": " + error.message
-      );
-    } finally {
-      setUpdatingTransfer(null);
-    }
-  };
-
-  // Format Firestore timestamp.
-  const formatTransferDate = (timestamp) => {
-    if (!timestamp) return "Date unavailable";
-
-    const date = timestamp.toDate
-      ? timestamp.toDate()
-      : new Date(timestamp);
-
-    if (isNaN(date.getTime())) return "Date unavailable";
-
-    return date.toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-  };
+    setSecurityCode(security.code || "");
+  }, [selectedCustomer, selectedCustomerId]);
 
   const inputStyle = {
     width: "100%",
     padding: "12px",
-    marginTop: "12px",
+    marginTop: "10px",
     border: "1px solid #ccc",
     borderRadius: "10px",
     boxSizing: "border-box",
@@ -160,14 +117,163 @@ function Admin({ setPage }) {
 
   const saveButton = {
     width: "100%",
-    marginTop: "20px",
+    marginTop: "18px",
     padding: "14px",
     background: "#005EB8",
     color: "#fff",
     border: "none",
     borderRadius: "10px",
     fontWeight: "bold",
-    cursor: "pointer",
+    cursor: saving ? "not-allowed" : "pointer",
+    opacity: saving ? 0.6 : 1,
+  };
+
+  const saveSelectedCustomer = async (updates) => {
+    if (!selectedCustomerId || !selectedCustomer) {
+      alert("Please select a customer first.");
+      return false;
+    }
+
+    try {
+      setSaving(true);
+
+      await saveCustomer(selectedCustomerId, updates);
+
+      alert("Selected customer's information saved successfully.");
+      return true;
+    } catch (error) {
+      console.error("Customer Save Error:", error);
+      alert("Could not save customer information: " + error.message);
+      return false;
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const saveCustomerInformation = () =>
+    saveSelectedCustomer({
+      customer: {
+        ...(selectedCustomer.customer || {}),
+        name,
+        accountNumber,
+        sortCode,
+        currency,
+      },
+      email,
+    });
+
+  const saveAccountInformation = () =>
+    saveSelectedCustomer({
+      account: {
+        ...(selectedCustomer.account || {}),
+        balance,
+        status,
+      },
+    });
+
+  const saveCardInformation = () =>
+    saveSelectedCustomer({
+      card: {
+        ...(selectedCustomer.card || {}),
+        type: cardType,
+        expiry: cardExpiry,
+        status: cardStatus,
+      },
+    });
+
+  const saveSecurityInformation = () =>
+    saveSelectedCustomer({
+      security: {
+        ...(selectedCustomer.security || {}),
+        code: securityCode,
+      },
+    });
+
+  const sendNotification = async () => {
+    if (!notificationTitle.trim() || !notificationMessage.trim()) {
+      alert("Please complete the notification title and message.");
+      return;
+    }
+
+    const title =
+      notificationPriority === "Urgent"
+        ? "🔴 " + notificationTitle.trim()
+        : notificationPriority === "Important"
+        ? "🟡 " + notificationTitle.trim()
+        : notificationTitle.trim();
+
+    const existingNotifications =
+      selectedCustomer.notifications || [];
+
+    const saved = await saveSelectedCustomer({
+      notifications: [
+        {
+          title,
+          message: notificationMessage.trim(),
+          createdAt: new Date().toISOString(),
+        },
+        ...existingNotifications,
+      ].slice(0, 5),
+    });
+
+    if (saved) {
+      setNotificationTitle("");
+      setNotificationMessage("");
+      setNotificationPriority("Normal");
+    }
+  };
+
+  const changeTransferStatus = async (transferId, newStatus) => {
+    try {
+      setUpdatingTransfer(transferId);
+
+      await updateDoc(
+        doc(db, "bank", "royalbank", "transfers", transferId),
+        { status: newStatus }
+      );
+
+      alert("Demo transfer status updated.");
+    } catch (error) {
+      console.error("Transfer Update Error:", error);
+      alert("Could not update transfer: " + error.message);
+    } finally {
+      setUpdatingTransfer(null);
+    }
+  };
+
+  const deleteTransfer = async (transferId) => {
+    const confirmed = window.confirm(
+      "Permanently delete this fictional demo receipt?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setUpdatingTransfer(transferId);
+
+      await deleteDoc(
+        doc(db, "bank", "royalbank", "transfers", transferId)
+      );
+
+      alert("Demo receipt deleted.");
+    } catch (error) {
+      console.error("Delete Transfer Error:", error);
+      alert("Could not delete receipt: " + error.message);
+    } finally {
+      setUpdatingTransfer(null);
+    }
+  };
+
+  const formatTransferDate = (timestamp) => {
+    if (!timestamp) return "Date unavailable";
+
+    const date = timestamp.toDate
+      ? timestamp.toDate()
+      : new Date(timestamp);
+
+    if (isNaN(date.getTime())) return "Date unavailable";
+
+    return date.toLocaleString("en-GB");
   };
 
   const statusStyle = (value) => {
@@ -189,11 +295,16 @@ function Admin({ setPage }) {
     };
   };
 
-  const sortedTransfers = [...transfers].sort((a, b) => {
-    const dateA = a.createdAt?.toMillis?.() || 0;
-    const dateB = b.createdAt?.toMillis?.() || 0;
-    return dateB - dateA;
-  });
+  const selectedTransfers = transfers
+    .filter(
+      (transfer) =>
+        transfer.customerId === selectedCustomerId
+    )
+    .sort((a, b) => {
+      const dateA = a.createdAt?.toMillis?.() || 0;
+      const dateB = b.createdAt?.toMillis?.() || 0;
+      return dateB - dateA;
+    });
 
   return (
     <div
@@ -219,411 +330,284 @@ function Admin({ setPage }) {
         ← Back
       </button>
 
-      <h1 style={{ color: "#00205B", marginBottom: "30px" }}>
-        🏦 Royal Bank Admin Panel
+      <h1 style={{ color: "#00205B" }}>
+        Royal Bank Admin Panel
       </h1>
 
-      <div style={{ display: "grid", gap: "20px" }}>
+      <CustomerManager />
 
-        {/* TRANSFER MANAGER */}
+      {!selectedCustomer ? (
         <div style={cardStyle}>
-          <h3>💸 Transfer Manager</h3>
-
-          <p style={{ color: "#64748b", fontSize: "14px" }}>
-            Review submitted fictional demo transfers and manage their statuses.
-          </p>
-
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              flexWrap: "wrap",
-              marginBottom: "20px",
-            }}
-          >
-            {[
-              ["Pending", "pending", "#fff4d6", "#946200"],
-              ["Successful", "successful", "#dcfce7", "#166534"],
-              ["Failed", "failed", "#fee2e2", "#991b1b"],
-            ].map(([label, value, background, color]) => (
-              <div
-                key={value}
-                style={{
-                  flex: 1,
-                  minWidth: "100px",
-                  padding: "12px",
-                  borderRadius: "12px",
-                  background,
-                }}
-              >
-                <strong style={{ color }}>
-                  {transfers.filter(
-                    (item) => item.status?.toLowerCase() === value
-                  ).length}
-                </strong>
-                <div style={{ fontSize: "12px", color }}>{label}</div>
-              </div>
-            ))}
+          <h3>No customer selected</h3>
+          <p>Create or select a customer above to manage their demo account.</p>
+        </div>
+      ) : (
+        <div style={{ display: "grid", gap: "20px" }}>
+          <div style={cardStyle}>
+            <h2 style={{ color: "#00205B" }}>
+              Managing: {name || "Customer"}
+            </h2>
+            <p style={{ color: "#64748b" }}>
+              All changes below apply only to this selected customer.
+            </p>
+            <p><strong>Customer ID:</strong> {selectedCustomerId}</p>
           </div>
 
-          {loadingTransfers ? (
-            <p>Loading transfers...</p>
-          ) : sortedTransfers.length === 0 ? (
-            <div
-              style={{
-                padding: "25px",
-                textAlign: "center",
-                background: "#f8fafc",
-                borderRadius: "12px",
-                color: "#64748b",
-              }}
+          <div style={cardStyle}>
+            <h3>Customer Information</h3>
+
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Customer Name"
+              style={inputStyle}
+            />
+
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Customer Email"
+              style={inputStyle}
+            />
+
+            <input
+              value={accountNumber}
+              onChange={(e) => setAccountNumber(e.target.value)}
+              placeholder="Account Number"
+              style={inputStyle}
+            />
+
+            <input
+              value={sortCode}
+              onChange={(e) => setSortCode(e.target.value)}
+              placeholder="Sort Code"
+              style={inputStyle}
+            />
+
+            <label style={{ display: "block", marginTop: "15px" }}>
+              App Currency
+            </label>
+
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              style={inputStyle}
             >
-              <h3>No transfers yet</h3>
-              <p>New demo submissions will appear here.</p>
-            </div>
-          ) : (
-            <div style={{ display: "grid", gap: "15px" }}>
-              {sortedTransfers.map((transfer) => (
-                <div
-                  key={transfer.id}
-                  style={{
-                    border: "1px solid #e2e8f0",
-                    borderRadius: "12px",
-                    padding: "16px",
-                    background: "#fff",
-                  }}
-                >
+              {currencyOptions.map((item) => (
+                <option key={item.code} value={item.code}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+
+            <button
+              style={saveButton}
+              disabled={saving}
+              onClick={saveCustomerInformation}
+            >
+              Save Customer Information
+            </button>
+          </div>
+
+          <div style={cardStyle}>
+            <h3>Account Management</h3>
+
+            <input
+              value={balance}
+              onChange={(e) => setBalance(e.target.value)}
+              placeholder="Demo Account Balance"
+              style={inputStyle}
+            />
+
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              style={inputStyle}
+            >
+              <option>Active</option>
+              <option>Dormant</option>
+              <option>Frozen</option>
+              <option>Closed</option>
+            </select>
+
+            <button
+              style={saveButton}
+              disabled={saving}
+              onClick={saveAccountInformation}
+            >
+              Save Account Information
+            </button>
+          </div>
+
+          <div style={cardStyle}>
+            <h3>Card Management</h3>
+
+            <input
+              value={cardType}
+              onChange={(e) => setCardType(e.target.value)}
+              placeholder="Card Type"
+              style={inputStyle}
+            />
+
+            <input
+              value={cardExpiry}
+              onChange={(e) => setCardExpiry(e.target.value)}
+              placeholder="Expiry (MM/YY)"
+              style={inputStyle}
+            />
+
+            <select
+              value={cardStatus}
+              onChange={(e) => setCardStatus(e.target.value)}
+              style={inputStyle}
+            >
+              <option>Active</option>
+              <option>Inactive</option>
+              <option>Dormant</option>
+              <option>Frozen</option>
+              <option>Blocked</option>
+            </select>
+
+            <button
+              style={saveButton}
+              disabled={saving}
+              onClick={saveCardInformation}
+            >
+              Save Card Information
+            </button>
+          </div>
+
+          <div style={cardStyle}>
+            <h3>Notification Manager</h3>
+
+            <input
+              value={notificationTitle}
+              onChange={(e) => setNotificationTitle(e.target.value)}
+              placeholder="Notification Title"
+              style={inputStyle}
+            />
+
+            <textarea
+              value={notificationMessage}
+              onChange={(e) => setNotificationMessage(e.target.value)}
+              placeholder="Notification Message"
+              style={{ ...inputStyle, height: "100px" }}
+            />
+
+            <select
+              value={notificationPriority}
+              onChange={(e) => setNotificationPriority(e.target.value)}
+              style={inputStyle}
+            >
+              <option>Normal</option>
+              <option>Important</option>
+              <option>Urgent</option>
+            </select>
+
+            <button
+              style={saveButton}
+              disabled={saving}
+              onClick={sendNotification}
+            >
+              Send Notification to Selected Customer
+            </button>
+          </div>
+
+          <div style={cardStyle}>
+            <h3>Security Manager</h3>
+
+            <input
+              value={securityCode}
+              onChange={(e) => setSecurityCode(e.target.value)}
+              placeholder="Demo Security Code"
+              style={inputStyle}
+            />
+
+            <button
+              style={saveButton}
+              disabled={saving}
+              onClick={saveSecurityInformation}
+            >
+              Save Security Code
+            </button>
+          </div>
+
+          <div style={cardStyle}>
+            <h3>Transfer Manager</h3>
+
+            <p style={{ color: "#64748b", fontSize: "14px" }}>
+              Fictional demo transfers for this selected customer only.
+            </p>
+
+            {loadingTransfers ? (
+              <p>Loading transfers...</p>
+            ) : selectedTransfers.length === 0 ? (
+              <p>No demo transfers for this customer yet.</p>
+            ) : (
+              <div style={{ display: "grid", gap: "15px" }}>
+                {selectedTransfers.map((transfer) => (
                   <div
+                    key={transfer.id}
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      gap: "10px",
-                      flexWrap: "wrap",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "12px",
+                      padding: "16px",
                     }}
                   >
-                    <strong style={{ color: "#00205B", fontSize: "17px" }}>
+                    <strong>
                       {transfer.recipientName || "Unknown recipient"}
                     </strong>
+
+                    <h2 style={{ color: "#005EB8" }}>
+                      {transfer.amount || "—"}
+                    </h2>
+
+                    <p><strong>Bank:</strong> {transfer.bankName || "—"}</p>
+                    <p><strong>Account:</strong> {transfer.accountNumber || "—"}</p>
+                    <p><strong>Reference:</strong> {transfer.paymentReference || "—"}</p>
+                    <p style={{ fontSize: "12px", color: "#64748b" }}>
+                      Submitted: {formatTransferDate(transfer.createdAt)}
+                    </p>
 
                     <span style={statusStyle(transfer.status)}>
                       {transfer.status || "pending"}
                     </span>
+
+                    <label style={{ display: "block", marginTop: "15px" }}>
+                      Change demo transfer status
+                    </label>
+
+                    <select
+                      value={(transfer.status || "pending").toLowerCase()}
+                      disabled={updatingTransfer === transfer.id}
+                      onChange={(e) =>
+                        changeTransferStatus(transfer.id, e.target.value)
+                      }
+                      style={inputStyle}
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="successful">Successful</option>
+                      <option value="failed">Failed</option>
+                    </select>
+
+                    <button
+                      disabled={updatingTransfer === transfer.id}
+                      onClick={() => deleteTransfer(transfer.id)}
+                      style={{
+                        ...saveButton,
+                        background: "#fee2e2",
+                        color: "#991b1b",
+                      }}
+                    >
+                      Delete Demo Receipt
+                    </button>
                   </div>
-
-                  <h2 style={{ color: "#005EB8", margin: "12px 0" }}>
-                    {transfer.amount || "—"}
-                  </h2>
-
-                  <p><strong>Bank:</strong> {transfer.bankName || "—"}</p>
-                  <p><strong>Account number:</strong> {transfer.accountNumber || "—"}</p>
-                  <p><strong>Sort code:</strong> {transfer.sortCode || "—"}</p>
-                  <p><strong>Reference:</strong> {transfer.paymentReference || "—"}</p>
-
-                  <p style={{ color: "#64748b", fontSize: "12px" }}>
-                    Submitted: {formatTransferDate(transfer.createdAt)}
-                  </p>
-
-                  <label
-                    style={{
-                      display: "block",
-                      marginTop: "15px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Change transfer status
-                  </label>
-
-                  <select
-                    value={(transfer.status || "pending").toLowerCase()}
-                    disabled={updatingTransfer === transfer.id}
-                    onChange={(e) =>
-                      changeTransferStatus(transfer.id, e.target.value)
-                    }
-                    style={{
-                      ...inputStyle,
-                      marginTop: "8px",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="successful">Successful</option>
-                    <option value="failed">Failed</option>
-                  </select>
-
-                  {updatingTransfer === transfer.id && (
-                    <p style={{ color: "#005EB8", fontSize: "13px" }}>
-                      Processing...
-                    </p>
-                  )}
-
-                  <button
-                    onClick={() => deleteTransfer(transfer.id)}
-                    disabled={updatingTransfer === transfer.id}
-                    style={{
-                      width: "100%",
-                      padding: "12px",
-                      marginTop: "12px",
-                      background: "#fee2e2",
-                      color: "#991b1b",
-                      border: "1px solid #fecaca",
-                      borderRadius: "10px",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      opacity: updatingTransfer === transfer.id ? 0.6 : 1,
-                    }}
-                  >
-                    🗑 Delete Receipt
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-
-        {/* CUSTOMER INFORMATION */}
-        <div style={cardStyle}>
-          <h3>👤 Customer Information</h3>
-
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Customer Name"
-            style={inputStyle}
-          />
-
-          <input
-            value={accountNumber}
-            onChange={(e) => setAccountNumber(e.target.value)}
-            placeholder="Account Number"
-            style={inputStyle}
-          />
-
-          <input
-            value={sortCode}
-            onChange={(e) => setSortCode(e.target.value)}
-            placeholder="Sort Code"
-            style={inputStyle}
-          />
-
-          <label
-            style={{
-              display: "block",
-              marginTop: "15px",
-              fontWeight: "bold",
-            }}
-          >
-            App Currency
-          </label>
-
-          <select
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-            style={inputStyle}
-          >
-            {currencyOptions.map((item) => (
-              <option key={item.code} value={item.code}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-
-          <button
-            style={saveButton}
-            onClick={() =>
-              saveToFirebase({
-                ...bank,
-                customer: {
-                  ...bank.customer,
-                  name,
-                  accountNumber,
-                  sortCode,
-                  currency,
-                },
-              })
-            }
-          >
-            Save Customer
-          </button>
-        </div>
-
-        {/* ACCOUNT MANAGEMENT */}
-        <div style={cardStyle}>
-          <h3>💰 Account Management</h3>
-
-          <input
-            value={balance}
-            onChange={(e) => setBalance(e.target.value)}
-            placeholder="Account Balance"
-            style={inputStyle}
-          />
-
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            style={inputStyle}
-          >
-            <option>Dormant</option>
-            <option>Active</option>
-            <option>Frozen</option>
-            <option>Closed</option>
-          </select>
-
-          <button
-            style={saveButton}
-            onClick={() =>
-              saveToFirebase({
-                ...bank,
-                account: { ...bank.account, balance },
-                customer: { ...bank.customer, status },
-              })
-            }
-          >
-            Save Account
-          </button>
-        </div>
-
-        {/* CARD MANAGEMENT */}
-        <div style={cardStyle}>
-          <h3>💳 Card Management</h3>
-
-          <input
-            value={cardType}
-            onChange={(e) => setCardType(e.target.value)}
-            placeholder="Card Type"
-            style={inputStyle}
-          />
-
-          <input
-            value={cardExpiry}
-            onChange={(e) => setCardExpiry(e.target.value)}
-            placeholder="Expiry (MM/YY)"
-            style={inputStyle}
-          />
-
-          <select
-            value={cardStatus}
-            onChange={(e) => setCardStatus(e.target.value)}
-            style={inputStyle}
-          >
-            <option>Active</option>
-            <option>Dormant</option>
-            <option>Frozen</option>
-            <option>Blocked</option>
-          </select>
-
-          <button
-            style={saveButton}
-            onClick={() =>
-              saveToFirebase({
-                ...bank,
-                card: {
-                  ...bank.card,
-                  type: cardType,
-                  expiry: cardExpiry,
-                  status: cardStatus,
-                },
-              })
-            }
-          >
-            Save Card
-          </button>
-        </div>
-
-        {/* NOTIFICATION MANAGER */}
-        <div style={cardStyle}>
-          <h3>🔔 Notification Manager</h3>
-
-          <input
-            value={notificationTitle}
-            onChange={(e) => setNotificationTitle(e.target.value)}
-            placeholder="Notification Title"
-            style={inputStyle}
-          />
-
-          <textarea
-            value={notificationMessage}
-            onChange={(e) => setNotificationMessage(e.target.value)}
-            placeholder="Notification Message"
-            style={{ ...inputStyle, height: "100px" }}
-          />
-
-          <select
-            value={notificationPriority}
-            onChange={(e) => setNotificationPriority(e.target.value)}
-            style={inputStyle}
-          >
-            <option>Normal</option>
-            <option>Important</option>
-            <option>Urgent</option>
-          </select>
-
-          <button
-            style={saveButton}
-            onClick={async () => {
-              if (
-                !notificationTitle.trim() ||
-                !notificationMessage.trim()
-              ) {
-                alert("Please complete all fields.");
-                return;
-              }
-
-              const title =
-                notificationPriority === "Urgent"
-                  ? "🔴 " + notificationTitle
-                  : notificationPriority === "Important"
-                  ? "🟡 " + notificationTitle
-                  : notificationTitle;
-
-              const updatedBank = {
-                ...bank,
-                notifications: [
-                  { title, message: notificationMessage },
-                  ...(bank.notifications || []),
-                ].slice(0, 5),
-              };
-
-              await saveToFirebase(updatedBank);
-
-              setNotificationTitle("");
-              setNotificationMessage("");
-              setNotificationPriority("Normal");
-            }}
-          >
-            Send Notification
-          </button>
-        </div>
-
-        {/* SECURITY MANAGER */}
-        <div style={cardStyle}>
-          <h3>🔐 Security Manager</h3>
-
-          <input
-            value={securityCode}
-            onChange={(e) => setSecurityCode(e.target.value)}
-            placeholder="Demo Security Code"
-            style={inputStyle}
-          />
-
-          <button
-            style={saveButton}
-            onClick={() =>
-              saveToFirebase({
-                ...bank,
-                security: {
-                  ...bank.security,
-                  code: securityCode,
-                },
-              })
-            }
-          >
-            Save Security Code
-          </button>
-        </div>
-
-      </div>
+      )}
     </div>
   );
 }

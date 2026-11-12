@@ -12,7 +12,11 @@ function SecurityCode({
   const [loading, setLoading] = useState(false);
 
   const { t } = useTranslation();
-  const { bank, submitTransfer } = useContext(BankContext);
+  const { bank, selectedCustomer, submitTransfer } =
+    useContext(BankContext);
+
+  const customerData = selectedCustomer || bank;
+  const securityCode = customerData?.security?.code;
 
   const verifyCode = async () => {
     if (loading) return;
@@ -23,7 +27,10 @@ function SecurityCode({
       return;
     }
 
-    if (String(code).trim() !== String(bank.security.code)) {
+    if (
+      securityCode == null ||
+      String(code).trim() !== String(securityCode)
+    ) {
       alert(t("invalidSecurityCode"));
       return;
     }
@@ -40,7 +47,6 @@ function SecurityCode({
       setCompletedTransfer(result);
       setCode("");
       setPage("receipt");
-
     } catch (error) {
       console.error("Transfer error:", error);
       alert("Transfer could not be submitted. Please try again.");
@@ -116,28 +122,29 @@ function SecurityCode({
       >
         {loading ? "Processing..." : t("verify")}
       </button>
+
       <button
-  onClick={() => {
-    if (!loading) {
-      setCode("");
-      setPage("transfer");
-    }
-  }}
-  disabled={loading}
-  style={{
-    marginTop: "12px",
-    width: "100%",
-    padding: "13px",
-    background: "white",
-    color: "#082B6B",
-    border: "1px solid #082B6B",
-    borderRadius: "10px",
-    fontSize: "15px",
-    cursor: "pointer",
-  }}
->
-  ← Back to Transfer
-</button>
+        onClick={() => {
+          if (!loading) {
+            setCode("");
+            setPage("transfer");
+          }
+        }}
+        disabled={loading}
+        style={{
+          marginTop: "12px",
+          width: "100%",
+          padding: "13px",
+          background: "white",
+          color: "#082B6B",
+          border: "1px solid #082B6B",
+          borderRadius: "10px",
+          fontSize: "15px",
+          cursor: "pointer",
+        }}
+      >
+        ← Back to Transfer
+      </button>
     </div>
   );
 }

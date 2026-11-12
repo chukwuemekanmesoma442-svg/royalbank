@@ -3,15 +3,34 @@ import React, { useContext } from "react";
 import { BankContext } from "../context/BankContext";
 
 function RecentTransactions({ onSelectTransfer }) {
-  const { bank, transfers, loadingTransfers } = useContext(BankContext);
+  const {
+    selectedCustomer,
+    transfers,
+    loadingTransfers,
+    isAdmin,
+  } = useContext(BankContext);
+
+  const customerData = selectedCustomer;
 
   const allowedCurrencies = ["GBP", "USD", "EUR", "CAD", "AUD"];
 
-  const savedCurrency = bank?.customer?.currency || "GBP";
+  const savedCurrency =
+    customerData?.account?.currency ||
+    customerData?.customer?.currency ||
+    "GBP";
 
   const currency = allowedCurrencies.includes(savedCurrency)
     ? savedCurrency
     : "GBP";
+
+  // Never display transfers without a selected customer.
+  const customerId = customerData?.id;
+
+  const customerTransfers = customerId
+    ? (transfers || []).filter(
+        (transfer) => transfer.customerId === customerId
+      )
+    : [];
 
   const formatAmount = (amount) => {
     const numericAmount = Number(
@@ -48,7 +67,7 @@ function RecentTransactions({ onSelectTransfer }) {
     });
   };
 
-  const recentTransfers = [...transfers]
+  const recentTransfers = [...customerTransfers]
     .sort((a, b) => {
       const dateA = a.createdAt?.toDate
         ? a.createdAt.toDate().getTime()
@@ -65,20 +84,26 @@ function RecentTransactions({ onSelectTransfer }) {
   return (
     <div
       style={{
-        background: "#fff",
+        background: "#123B65",
         padding: "20px",
         borderRadius: "14px",
         marginTop: "22px",
         boxShadow: "0 3px 15px rgba(0,0,0,0.05)",
       }}
     >
-      <h3 style={{ color: "#082B6B", marginTop: 0 }}>
+      <h3 style={{ color: "#edeff3", marginTop: 0 }}>
         Recent Transactions
       </h3>
 
       {loadingTransfers ? (
         <p style={{ color: "#777" }}>
           Loading transactions...
+        </p>
+      ) : !customerId ? (
+        <p style={{ color: "#777" }}>
+          {isAdmin
+            ? "Select a customer to view their transactions."
+            : "Your transaction information is unavailable."}
         </p>
       ) : recentTransfers.length === 0 ? (
         <p style={{ color: "#777" }}>
@@ -108,11 +133,11 @@ function RecentTransactions({ onSelectTransfer }) {
                   overflowWrap: "anywhere",
                 }}
               >
-                {transfer.recipientName}
+                {transfer.recipientName || "Transfer"}
               </strong>
 
               <span style={{ color: "#888", fontSize: "12px" }}>
-                {transfer.bankName} • {formatDate(transfer.createdAt)}
+                {transfer.bankName || "Bank"} • {formatDate(transfer.createdAt)}
               </span>
             </div>
 

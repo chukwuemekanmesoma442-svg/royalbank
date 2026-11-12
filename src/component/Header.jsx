@@ -1,50 +1,86 @@
-import React from "react";
+
+import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import logo from "../assets/logo.png";
 import { FiMenu, FiBell } from "react-icons/fi";
+import { BankContext } from "../context/BankContext";
 
 function Header({ setMenuOpen, setPage }) {
   const { t } = useTranslation();
 
+  const {
+    customerProfile,
+    selectedCustomer,
+    isAdmin,
+  } = useContext(BankContext);
+
+  const profile = isAdmin ? selectedCustomer : customerProfile;
+
+  const customerName =
+    profile?.customer?.name ||
+    profile?.customer?.fullName ||
+    profile?.name ||
+    "";
+
+  const initials = customerName
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word.charAt(0).toUpperCase())
+    .join("") || "?";
+
   return (
     <header
       style={{
-        background: "#ffffff",
-        padding: "12px 16px",
+        background: "#FFFFFF",
+        padding: "13px 18px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        borderBottom: "1px solid #e5e7eb",
+        borderBottom: "2px solid #fffdf7",
         position: "sticky",
         top: 0,
         zIndex: 1000,
+        boxShadow: "0 5px 16px rgba(0,0,0,0.12)",
       }}
     >
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "12px",
+          gap: "15px",
         }}
       >
         <button
           onClick={() => setMenuOpen(true)}
+          aria-label="Open menu"
           style={{
             border: "none",
             background: "transparent",
             cursor: "pointer",
-            fontSize: "24px",
+            padding: "5px",
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          <FiMenu color="#00205B" size={26} />
+          <FiMenu
+            color="#000000"
+            size={29}
+            strokeWidth={3}
+          />
         </button>
 
         <img
           src={logo}
           alt={t("royalBank")}
           style={{
-            height: "42px",
+            height: "52px",
+            maxWidth: "180px",
             objectFit: "contain",
+            filter: "contrast(1.4) saturate(1.15)",
+            transform: "scale(1.08)",
+            transformOrigin: "left center",
           }}
         />
       </div>
@@ -56,30 +92,44 @@ function Header({ setMenuOpen, setPage }) {
           gap: "18px",
         }}
       >
-        <FiBell
-          size={22}
-          color="#00205B"
-          style={{ cursor: "pointer" }}
+        <button
           onClick={() => setPage("notifications")}
-        />
-
-        <div
-          onClick={() => setPage("profile")}
+          aria-label="Notifications"
           style={{
-            width: "40px",
-            height: "40px",
+            border: "none",
+            background: "transparent",
+            cursor: "pointer",
+            padding: "5px",
+          }}
+        >
+          <FiBell
+            size={24}
+            color="#123B65"
+            strokeWidth={2.5}
+          />
+        </button>
+
+        <button
+          onClick={() => setPage("profile")}
+          aria-label="Open customer profile"
+          style={{
+            width: "44px",
+            height: "44px",
             borderRadius: "50%",
-            background: "#005EB8",
-            color: "#fff",
+            background: "linear-gradient(135deg, #D4AF37, #F0D778)",
+            color: "#061A35",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontWeight: "bold",
+            fontWeight: "900",
+            fontSize: "15px",
             cursor: "pointer",
+            border: "2px solid #123B65",
+            boxShadow: "0 3px 10px rgba(0,0,0,0.15)",
           }}
         >
-          KR
-        </div>
+          {initials}
+        </button>
       </div>
     </header>
   );

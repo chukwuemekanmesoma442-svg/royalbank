@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -47,22 +48,26 @@ function QuickAction({ setPage }) {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(2,1fr)",
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
           gap: "15px",
         }}
       >
-        {actions.map((item, index) => (
-          <div
-            key={index}
+        {actions.map((item) => (
+          <button
+            key={item.page}
+            type="button"
             onClick={() => setPage(item.page)}
             style={{
-              background: "#fff",
+              background: "#123B65",
+              border: "none",
               borderRadius: "18px",
               padding: "20px",
               textAlign: "center",
-              boxShadow: "0 5px 15px rgba(0,0,0,.08)",
+              boxShadow: "0 5px 15px rgba(250, 243, 243, 0.08)",
               cursor: "pointer",
               transition: ".2s",
+              width: "100%",
+              minHeight: "105px",
             }}
           >
             <div
@@ -78,12 +83,12 @@ function QuickAction({ setPage }) {
               style={{
                 margin: 0,
                 fontWeight: "600",
-                color: "#333",
+                color: "#fef6f6",
               }}
             >
               {item.title}
             </p>
-          </div>
+          </button>
         ))}
       </div>
     </div>

@@ -5,7 +5,14 @@ import { BankContext } from "../context/BankContext";
 
 function Transfer({ setPage, setPendingTransfer }) {
   const { t } = useTranslation();
-  const { bank } = useContext(BankContext);
+
+  const {
+    selectedCustomer,
+    selectedCustomerId,
+  } = useContext(BankContext);
+
+  const customerData = selectedCustomer || {};
+  const account = customerData.account || {};
 
   const [form, setForm] = useState({
     recipientName: "",
@@ -20,7 +27,7 @@ function Transfer({ setPage, setPendingTransfer }) {
 
   const allowedCurrencies = ["GBP", "USD", "EUR", "CAD", "AUD"];
 
-  const savedCurrency = bank?.customer?.currency || "GBP";
+  const savedCurrency = account.currency || "GBP";
 
   const currency = allowedCurrencies.includes(savedCurrency)
     ? savedCurrency
@@ -43,12 +50,10 @@ function Transfer({ setPage, setPendingTransfer }) {
     );
   };
 
-  const availableBalance = formatAmount(
-    bank?.account?.balance ?? 0
-  );
+  const availableBalance = formatAmount(account.balance ?? 0);
 
-  const accountStatus =
-    bank?.customer?.status || "Dormant";
+  // Read the status entered by Admin in the customer account.
+  const accountStatus = account.status || "Not set";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,6 +67,11 @@ function Transfer({ setPage, setPendingTransfer }) {
   };
 
   const handleContinue = () => {
+    if (!selectedCustomerId || !selectedCustomer) {
+      setError("Customer account information is unavailable.");
+      return;
+    }
+
     const requiredFields = [
       "recipientName",
       "bankName",
@@ -78,9 +88,7 @@ function Transfer({ setPage, setPendingTransfer }) {
       return;
     }
 
-    const amount = Number(
-      form.amount.replace(/,/g, "")
-    );
+    const amount = Number(form.amount.replace(/,/g, ""));
 
     if (!Number.isFinite(amount) || amount <= 0) {
       setError(t("invalidAmount"));
@@ -96,6 +104,7 @@ function Transfer({ setPage, setPendingTransfer }) {
       setPendingTransfer({
         ...form,
         amount: amount.toFixed(2),
+        customerId: selectedCustomerId,
       });
     }
 
@@ -125,6 +134,18 @@ function Transfer({ setPage, setPendingTransfer }) {
       type: "number",
     },
   ];
+
+  if (!selectedCustomer) {
+    return (
+      <div style={{ padding: "30px", textAlign: "center" }}>
+        <h3>Customer account unavailable</h3>
+        <p>Please return to your dashboard and try again.</p>
+        <button onClick={() => setPage("dashboard")}>
+          Back to Dashboard
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -185,7 +206,6 @@ function Transfer({ setPage, setPendingTransfer }) {
           }}
         />
 
-        {/* ACCOUNT INFORMATION */}
         <div
           style={{
             background: "#eef5ff",

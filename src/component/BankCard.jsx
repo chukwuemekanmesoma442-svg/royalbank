@@ -1,8 +1,40 @@
+
 import React, { useContext } from "react";
 import { BankContext } from "../context/BankContext";
 
 function BankCard() {
-  const { bank } = useContext(BankContext);
+  const { selectedCustomer } = useContext(BankContext);
+
+  const customerData = selectedCustomer;
+
+  const customer = customerData?.customer || {};
+  const account = customerData?.account || {};
+  const card = customerData?.card || {};
+
+  if (!customerData) {
+    return (
+      <div
+        style={{
+          marginTop: "20px",
+          background: "#fff",
+          borderRadius: "20px",
+          padding: "20px",
+          color: "#777",
+        }}
+      >
+        Card information is unavailable.
+      </div>
+    );
+  }
+
+  const accountNumber =
+    account.accountNumber ||
+    customer.accountNumber ||
+    "•••• •••• •••• 0000";
+
+  const displayNumber = accountNumber.includes("*")
+    ? accountNumber.replace("****", "•••• •••• •••• ")
+    : accountNumber;
 
   return (
     <div
@@ -41,9 +73,10 @@ function BankCard() {
           letterSpacing: "3px",
           marginTop: "20px",
           fontWeight: "500",
+          fontSize: "20px",
         }}
       >
-        {bank.customer.accountNumber.replace("****", "•••• •••• ••••")}
+        {displayNumber}
       </h2>
 
       <div
@@ -51,19 +84,20 @@ function BankCard() {
           display: "flex",
           justifyContent: "space-between",
           marginTop: "25px",
+          gap: "10px",
         }}
       >
         <div>
           <small style={{ opacity: 0.8 }}>CARD HOLDER</small>
           <p style={{ margin: "5px 0 0" }}>
-            {bank.customer.name}
+            {customer.name || "Customer"}
           </p>
         </div>
 
         <div style={{ textAlign: "right" }}>
           <small style={{ opacity: 0.8 }}>EXPIRES</small>
           <p style={{ margin: "5px 0 0" }}>
-            {bank.card.expiry}
+            {card.expiry || "—"}
           </p>
         </div>
       </div>

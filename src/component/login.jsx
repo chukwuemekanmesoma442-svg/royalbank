@@ -1,24 +1,81 @@
-import React, { useState, useContext } from "react";
-import { useTranslation } from "react-i18next";
-import { BankContext } from "../context/BankContext";
 
-function Login({ onLogin }) {
-  const [username, setUsername] = useState("");
+import React, { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
+
+function Login({ onLogin, onAdminAccess }) {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const tapCount = useRef(0);
+  const tapTimer = useRef(null);
 
   const { t, i18n } = useTranslation();
-  const { bank } = useContext(BankContext);
 
-  const handleLogin = (e) => {
+  useEffect(() => {
+    return () => clearTimeout(tapTimer.current);
+  }, []);
+
+  const handleBrandTap = () => {
+    tapCount.current += 1;
+
+    clearTimeout(tapTimer.current);
+
+    if (tapCount.current >= 5) {
+      tapCount.current = 0;
+      onAdminAccess?.();
+      return;
+    }
+
+    tapTimer.current = setTimeout(() => {
+      tapCount.current = 0;
+    }, 2000);
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (
-      username === bank.login.username &&
-      password === bank.login.password
-    ) {
-      onLogin();
-    } else {
-      alert("Invalid username or password");
+    if (!email.trim() || !password) {
+      alert("Please enter your email address and password.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await signInWithEmailAndPassword(
+        auth,
+        email.trim().toLowerCase(),
+        password
+      );
+
+      onLogin?.();
+    } catch (error) {
+      console.error("Customer login error:", error);
+
+      const messages = {
+        "auth/invalid-credential":
+          "Incorrect email address or password.",
+        "auth/user-not-found":
+          "No account was found with this email address.",
+        "auth/wrong-password":
+          "Incorrect email address or password.",
+        "auth/invalid-email":
+          "Please enter a valid email address.",
+        "auth/too-many-requests":
+          "Too many attempts. Please try again later.",
+        "auth/network-request-failed":
+          "Network error. Please check your internet connection."
+      };
+
+      alert(
+        messages[error.code] ||
+        "Unable to sign in. Please try again."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,7 +97,9 @@ function Login({ onLogin }) {
           padding: "35px",
           borderRadius: "12px",
           width: "360px",
+          maxWidth: "calc(100% - 40px)",
           boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+          boxSizing: "border-box",
         }}
       >
         <div
@@ -88,20 +147,25 @@ function Login({ onLogin }) {
         </div>
 
         <h2
+          onClick={handleBrandTap}
           style={{
             textAlign: "center",
             color: "#071B36",
             marginBottom: "20px",
+            cursor: "default",
+            userSelect: "none",
           }}
         >
           Royal Bank {t("login")}
         </h2>
 
         <input
-          type="text"
-          placeholder={t("username")}
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="email"
+          placeholder="Email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="username"
+          required
           style={{
             width: "100%",
             padding: "12px",
@@ -117,6 +181,8 @@ function Login({ onLogin }) {
           placeholder={t("password")}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          autoComplete="current-password"
+          required
           style={{
             width: "100%",
             padding: "12px",
@@ -129,19 +195,31 @@ function Login({ onLogin }) {
 
         <button
           type="submit"
+          disabled={loading}
           style={{
             width: "100%",
             padding: "12px",
-            background: "#0B3D91",
+            background: loading ? "#7890b5" : "#0B3D91",
             color: "#fff",
             border: "none",
             borderRadius: "8px",
             fontSize: "16px",
-            cursor: "pointer",
+            cursor: loading ? "not-allowed" : "pointer",
           }}
         >
-          {t("login")}
+          {loading ? "Signing in..." : t("login")}
         </button>
+
+        <p
+          style={{
+            textAlign: "center",
+            color: "#777",
+            fontSize: "11px",
+            marginTop: "18px",
+          }}
+        >
+          SIGN UP 
+        </p>
       </form>
     </div>
   );

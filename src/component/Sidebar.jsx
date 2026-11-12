@@ -1,8 +1,71 @@
+
 import React from "react";
 import { useTranslation } from "react-i18next";
+import logo from "../assets/logo.png";
+
+import {
+  FiHome,
+  FiCreditCard,
+  FiUser,
+  FiSettings,
+  FiHeadphones,
+  FiX,
+  FiChevronRight,
+} from "react-icons/fi";
 
 function Sidebar({ menuOpen, setMenuOpen, setPage }) {
   const { t } = useTranslation();
+
+  const menuItems = [
+    {
+      label: t("dashboard"),
+      page: "dashboard",
+      icon: FiHome,
+    },
+    {
+      label: t("transactions"),
+      page: "transactions",
+      icon: FiCreditCard,
+    },
+    {
+      label: t("profile"),
+      page: "profile",
+      icon: FiUser,
+    },
+    {
+      label: t("settings"),
+      page: "settings",
+      icon: FiSettings,
+    },
+    {
+      label: t("customerService"),
+      page: "support",
+      icon: FiHeadphones,
+    },
+  ];
+
+  const navigate = (page) => {
+    setPage(page);
+    setMenuOpen(false);
+  };
+
+  const menuButtonStyle = {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+    padding: "13px 14px",
+    border: "none",
+    borderRadius: "10px",
+    background: "transparent",
+    color: "#123B65",
+    fontSize: "14px",
+    fontWeight: "600",
+    fontFamily: "Arial, sans-serif",
+    textAlign: "left",
+    cursor: "pointer",
+    transition: "background 0.2s ease",
+  };
 
   return (
     <>
@@ -11,114 +74,205 @@ function Sidebar({ menuOpen, setMenuOpen, setPage }) {
           onClick={() => setMenuOpen(false)}
           style={{
             position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0,0,0,0.4)",
+            inset: 0,
+            background: "rgba(3, 15, 32, 0.55)",
+            backdropFilter: "blur(2px)",
             zIndex: 999,
           }}
         />
       )}
 
-      <div
+      <aside
         style={{
           position: "fixed",
           top: 0,
-          left: menuOpen ? 0 : "-260px",
-          width: "250px",
+          left: menuOpen ? 0 : "-300px",
+          width: "280px",
+          maxWidth: "85vw",
           height: "100vh",
-          background: "#00205B",
-          color: "#fff",
-          transition: "0.3s",
+          background: "#FFFFFF",
+          color: "#123B65",
+          transition: "left 0.3s ease",
           zIndex: 1000,
-          padding: "20px",
+          padding: "22px 18px",
           boxSizing: "border-box",
+          boxShadow: menuOpen
+            ? "8px 0 30px rgba(0,0,0,0.15)"
+            : "none",
+          display: "flex",
+          flexDirection: "column",
+          overflowY: "auto",
         }}
       >
-        <h2 style={{ marginTop: 0 }}>{t("royalBank")}</h2>
-
+        {/* Logo and close button */}
         <div
           style={{
-            marginTop: "30px",
             display: "flex",
-            flexDirection: "column",
-            gap: "20px",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingBottom: "20px",
+            borderBottom: "1px solid #E5EAF0",
           }}
         >
-          <div
-            onClick={() => {
-              setPage("dashboard");
-              setMenuOpen(false);
-            }}
-            style={{ cursor: "pointer" }}
-          >
-            🏠 {t("dashboard")}
-          </div>
-
-          <div
-            onClick={() => {
-              setPage("transactions");
-              setMenuOpen(false);
-            }}
-            style={{ cursor: "pointer" }}
-          >
-            💳 {t("transactions")}
-          </div>
-
-          <div
-            onClick={() => {
-              setPage("profile");
-              setMenuOpen(false);
-            }}
-            style={{ cursor: "pointer" }}
-          >
-            👤 {t("profile")}
-          </div>
-
-          <div
-            onClick={() => {
-              setPage("settings");
-              setMenuOpen(false);
-            }}
-            style={{ cursor: "pointer" }}
-          >
-            ⚙️ {t("settings")}
-          </div>
-
-          <div
-            onClick={() => {
-              setPage("support");
-              setMenuOpen(false);
-            }}
-            style={{ cursor: "pointer" }}
-          >
-            📞 {t("customerService")}
-          </div>
-
-          <div
-            onClick={() => setMenuOpen(false)}
+          <img
+            src={logo}
+            alt="The Royal Bank"
             style={{
-              marginTop: "40px",
-              color: "#FFD700",
+              width: "155px",
+              height: "75px",
+              objectFit: "contain",
+            }}
+          />
+
+          <button
+            onClick={() => setMenuOpen(false)}
+            aria-label="Close menu"
+            style={{
+              border: "none",
+              background: "#F1F5F9",
+              color: "#123B65",
+              borderRadius: "8px",
+              width: "34px",
+              height: "34px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               cursor: "pointer",
             }}
           >
-            ✖ {t("close")}
+            <FiX size={20} />
+          </button>
+        </div>
+
+        {/* Main menu heading */}
+        <div
+          style={{
+            marginTop: "28px",
+            marginBottom: "12px",
+            paddingLeft: "14px",
+            color: "#8795A8",
+            fontSize: "11px",
+            fontWeight: "700",
+            letterSpacing: "1.5px",
+            fontFamily: "Arial, sans-serif",
+          }}
+        >
+          MAIN MENU
+        </div>
+
+        {/* Navigation items */}
+        <nav
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "7px",
+          }}
+        >
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+
+            return (
+              <button
+                key={item.page}
+                onClick={() => navigate(item.page)}
+                style={menuButtonStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#EEF3F8";
+                  e.currentTarget.style.color = "#061A35";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = "#123B65";
+                }}
+              >
+                <Icon
+                  size={19}
+                  strokeWidth={2}
+                />
+
+                <span style={{ flex: 1 }}>
+                  {item.label}
+                </span>
+
+                <FiChevronRight
+                  size={15}
+                  color="#A0AEC0"
+                />
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Bottom section */}
+        <div
+          style={{
+            marginTop: "auto",
+            paddingTop: "22px",
+            borderTop: "1px solid #E5EAF0",
+          }}
+        >
+          <div
+            style={{
+              paddingLeft: "14px",
+              color: "#8795A8",
+              fontSize: "11px",
+              fontWeight: "700",
+              letterSpacing: "1.5px",
+              marginBottom: "12px",
+            }}
+          >
+            SUPPORT
           </div>
 
-          <div
-  onClick={() => {
-   setPage("admin-login");
-    setMenuOpen(false);
-  }}
-  style={{ cursor: "pointer" }}
->
-  customer service 
-</div>
+          <button
+            onClick={() => navigate("admin-login")}
+            style={menuButtonStyle}
+          >
+            <FiHeadphones size={19} strokeWidth={2} />
+            <span>Customer Service</span>
+            <FiChevronRight size={15} color="#A0AEC0" />
+          </button>
 
+          <div
+            style={{
+              marginTop: "22px",
+              padding: "14px",
+              background: "#F4F7FA",
+              borderRadius: "10px",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                color: "#123B65",
+                fontWeight: "700",
+                fontSize: "12px",
+              }}
+            >
+              THE ROYAL BANK
+            </div>
+
+            <div
+              style={{
+                color: "#8996A7",
+                fontSize: "10px",
+                marginTop: "5px",
+              }}
+            >
+              Secure Digital Banking
+            </div>
+
+            <div
+              style={{
+                width: "35px",
+                height: "2px",
+                background: "#D4AF37",
+                margin: "10px auto 0",
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </aside>
     </>
   );
 }

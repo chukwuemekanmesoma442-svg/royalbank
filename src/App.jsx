@@ -39,48 +39,94 @@ function App() {
 
   const [authReady, setAuthReady] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const t = translations[language];
 
-  // Verify Firebase authentication and administrator status.
+  // Monitor Firebase authentication and administrator access.
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setAuthReady(false);
+      setCurrentUser(user);
+      setIsAdmin(false);
 
       if (!user) {
-        setIsAdmin(false);
+        setPage("login");
+        setPendingTransfer(null);
+        setCompletedTransfer(null);
+        setSelectedTransfer(null);
         setAuthReady(true);
         return;
       }
 
       try {
-        const adminRef = doc(db, "admins", user.uid);
-        const adminSnapshot = await getDoc(adminRef);
+        const adminSnapshot = await getDoc(
+          doc(db, "admins", user.uid)
+        );
 
         const authorized =
           adminSnapshot.exists() &&
           adminSnapshot.data().enabled === true;
 
+        if (auth.currentUser?.uid !== user.uid) return;
+
         setIsAdmin(authorized);
+
+        if (page === "login" || page === "admin-login") {
+          setPage(authorized ? "admin" : "dashboard");
+        }
       } catch (error) {
-        console.error("Admin verification error:", error);
-        setIsAdmin(false);
+        console.error("Authentication verification error:", error);
+
+        if (auth.currentUser?.uid === user.uid) {
+          setIsAdmin(false);
+
+          if (page === "login" || page === "admin-login") {
+            setPage("dashboard");
+          }
+        }
       }
 
-      setAuthReady(true);
+      if (auth.currentUser?.uid === user.uid) {
+        setAuthReady(true);
+      }
     });
 
     return () => unsubscribe();
   }, []);
 
-  // Protect the Admin page against direct navigation.
+  // Protect all customer pages.
+  useEffect(() => {
+    const customerPages = [
+      "dashboard",
+      "security",
+      "profile",
+      "notifications",
+      "settings",
+      "transactions",
+      "support",
+      "transfer",
+      "cards",
+      "receipt",
+    ];
+
+    if (
+      authReady &&
+      customerPages.includes(page) &&
+      !currentUser
+    ) {
+      setPage("login");
+    }
+  }, [authReady, currentUser, page]);
+
+  // Protect the Admin dashboard.
   useEffect(() => {
     if (authReady && page === "admin" && !isAdmin) {
       setPage("admin-login");
     }
   }, [authReady, isAdmin, page]);
 
-  // Secure navigation into and out of Admin.
+  // Verify access before opening Admin.
   const handleAdminNavigation = async (nextPage) => {
     if (nextPage === "admin") {
       const user = auth.currentUser;
@@ -101,6 +147,7 @@ function App() {
           adminSnapshot.data().enabled === true
         ) {
           setIsAdmin(true);
+          setCurrentUser(user);
           setAuthReady(true);
           setPage("admin");
         } else {
@@ -123,7 +170,7 @@ function App() {
       return;
     }
 
-    // Sign out when leaving the Admin dashboard.
+    // Sign out when Admin leaves the Admin dashboard.
     if (page === "admin") {
       try {
         await signOut(auth);
@@ -132,29 +179,41 @@ function App() {
       }
 
       setIsAdmin(false);
+      setCurrentUser(null);
+      setPage("login");
+      return;
     }
 
     setPage(nextPage);
   };
 
-  // Open the receipt for a selected dashboard transaction.
+  // Open a selected transaction receipt.
   const handleSelectTransfer = (transfer) => {
     setSelectedTransfer(transfer);
     setPage("receipt");
   };
+
+  if (!authReady) {
+    return (
+      <div style={{ padding: "40px", textAlign: "center" }}>
+        Checking secure access...
+      </div>
+    );
+  }
 
   return (
     <>
       {page === "login" && (
         <Login
           onLogin={() => setPage("dashboard")}
+          onAdminAccess={() => setPage("admin-login")}
           language={language}
           setLanguage={setLanguage}
           t={t}
         />
       )}
 
-      {page === "dashboard" && (
+      {page === "dashboard" && currentUser && (
         <Dashboard
           setPage={setPage}
           onSelectTransfer={handleSelectTransfer}
@@ -164,7 +223,7 @@ function App() {
         />
       )}
 
-      {page === "security" && (
+      {page === "security" && currentUser && (
         <SecurityCode
           setPage={setPage}
           pendingTransfer={pendingTransfer}
@@ -175,7 +234,7 @@ function App() {
         />
       )}
 
-      {page === "profile" && (
+      {page === "profile" && currentUser && (
         <Profile
           setPage={setPage}
           language={language}
@@ -184,7 +243,7 @@ function App() {
         />
       )}
 
-      {page === "notifications" && (
+      {page === "notifications" && currentUser && (
         <Notifications
           setPage={setPage}
           language={language}
@@ -193,7 +252,7 @@ function App() {
         />
       )}
 
-      {page === "settings" && (
+      {page === "settings" && currentUser && (
         <Settings
           setPage={setPage}
           language={language}
@@ -202,7 +261,7 @@ function App() {
         />
       )}
 
-      {page === "transactions" && (
+      {page === "transactions" && currentUser && (
         <Transactions
           setPage={setPage}
           language={language}
@@ -211,7 +270,7 @@ function App() {
         />
       )}
 
-      {page === "support" && (
+      {page === "support" && currentUser && (
         <CustomerSupport
           setPage={setPage}
           language={language}
@@ -220,7 +279,7 @@ function App() {
         />
       )}
 
-      {page === "transfer" && (
+      {page === "transfer" && currentUser && (
         <Transfer
           setPage={setPage}
           setPendingTransfer={setPendingTransfer}
@@ -230,7 +289,7 @@ function App() {
         />
       )}
 
-      {page === "cards" && (
+      {page === "cards" && currentUser && (
         <Cards
           setPage={setPage}
           language={language}
@@ -239,8 +298,7 @@ function App() {
         />
       )}
 
-      {(page === "admin-login" ||
-        (page === "admin" && authReady && !isAdmin)) && (
+      {page === "admin-login" && (
         <AdminLogin
           setPage={handleAdminNavigation}
           language={language}
@@ -249,7 +307,7 @@ function App() {
         />
       )}
 
-      {page === "admin" && authReady && isAdmin && (
+      {page === "admin" && isAdmin && (
         <Admin
           setPage={handleAdminNavigation}
           language={language}
@@ -258,13 +316,7 @@ function App() {
         />
       )}
 
-      {page === "admin" && !authReady && (
-        <div style={{ padding: "40px", textAlign: "center" }}>
-          Verifying secure access...
-        </div>
-      )}
-
-      {page === "receipt" && (
+      {page === "receipt" && currentUser && (
         <TransferReceipt
           transfer={selectedTransfer || completedTransfer}
           setPage={setPage}
