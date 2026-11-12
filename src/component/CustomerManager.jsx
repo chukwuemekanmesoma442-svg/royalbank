@@ -21,6 +21,16 @@ import {
 import { BankContext } from "../context/BankContext";
 import { db, customerAuth } from "../firebase";
 
+// Keep Field outside CustomerManager to prevent input focus loss.
+function Field({ label, children }) {
+  return (
+    <label style={{ display: "block", fontSize: "14px" }}>
+      {label}
+      {children}
+    </label>
+  );
+}
+
 function CustomerManager() {
   const {
     customers = [],
@@ -30,17 +40,34 @@ function CustomerManager() {
   } = useContext(BankContext);
 
   const [selectedId, setSelectedId] = useState(selectedCustomerId || "");
+
+  // Personal details
   const [name, setName] = useState("");
+  const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+
+  // Residential address
+  const [houseAddress, setHouseAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [country, setCountry] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+
+  // Account details
   const [password, setPassword] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
+  const [sortCode, setSortCode] = useState("");
+  const [accountType, setAccountType] = useState("Personal Current Account");
+  const [currency, setCurrency] = useState("GBP");
   const [balance, setBalance] = useState("");
   const [status, setStatus] = useState("Active");
 
   const [saving, setSaving] = useState(false);
   const [sendingReset, setSendingReset] = useState(false);
 
-  // Demo-only password reference.
+  // Demo-only password reference
   const [demoPassword, setDemoPassword] = useState("");
   const [showDemoPassword, setShowDemoPassword] = useState(false);
   const [demoPasswordSaved, setDemoPasswordSaved] = useState(false);
@@ -49,42 +76,24 @@ function CustomerManager() {
     setSelectedId(selectedCustomerId || "");
   }, [selectedCustomerId]);
 
-  function selectCustomerRecord(id) {
-    setSelectedId(id);
-    selectCustomer(id);
-
-    const customer = customers.find((item) => item.id === id);
-
-    if (!customer) {
-      setName("");
-      setEmail("");
-      setAccountNumber("");
-      setBalance("");
-      setStatus("Active");
-      setPassword("");
-      setDemoPassword("");
-      setDemoPasswordSaved(false);
-      return;
-    }
-
-    setName(customer.customer?.name || "");
-    setEmail(customer.email || "");
-    setAccountNumber(customer.account?.accountNumber || "");
-    setBalance(customer.account?.balance ?? "");
-    setStatus(customer.account?.status || "Active");
-    setPassword("");
-    setDemoPassword("");
-    setDemoPasswordSaved(false);
-  }
-
-  function newCustomer() {
-    setSelectedId("");
-    selectCustomer("");
-
+  function resetForm() {
     setName("");
+    setGender("");
     setEmail("");
+    setPhone("");
+    setWhatsapp("");
+
+    setHouseAddress("");
+    setCity("");
+    setState("");
+    setCountry("");
+    setPostalCode("");
+
     setPassword("");
     setAccountNumber("");
+    setSortCode("");
+    setAccountType("Personal Current Account");
+    setCurrency("GBP");
     setBalance("");
     setStatus("Active");
 
@@ -93,7 +102,52 @@ function CustomerManager() {
     setShowDemoPassword(false);
   }
 
-  // CREATE OR UPDATE CUSTOMER PROFILE
+  function selectCustomerRecord(id) {
+    setSelectedId(id);
+    selectCustomer(id);
+
+    const customer = customers.find((item) => item.id === id);
+
+    if (!customer) {
+      resetForm();
+      return;
+    }
+
+    const personal = customer.customer || {};
+    const account = customer.account || {};
+
+    setName(personal.name || "");
+    setGender(personal.gender || "");
+    setEmail(customer.email || "");
+    setPhone(personal.phone || "");
+    setWhatsapp(personal.whatsapp || "");
+
+    setHouseAddress(personal.houseAddress || "");
+    setCity(personal.city || "");
+    setState(personal.state || "");
+    setCountry(personal.country || "");
+    setPostalCode(personal.postalCode || "");
+
+    setAccountNumber(account.accountNumber || "");
+    setSortCode(account.sortCode || "");
+    setAccountType(account.accountType || "Personal Current Account");
+    setCurrency(account.currency || "GBP");
+    setBalance(account.balance ?? "");
+    setStatus(account.status || "Active");
+
+    setPassword("");
+    setDemoPassword("");
+    setDemoPasswordSaved(false);
+    setShowDemoPassword(false);
+  }
+
+  function newCustomer() {
+    setSelectedId("");
+    selectCustomer("");
+    resetForm();
+  }
+
+  // CREATE OR UPDATE CUSTOMER
   async function handleSave() {
     if (!name.trim() || !email.trim() || !accountNumber.trim()) {
       alert("Please enter the customer's name, email and account number.");
@@ -125,22 +179,33 @@ function CustomerManager() {
       const profile = {
         customer: {
           name: name.trim(),
+          gender: gender.trim(),
+          phone: phone.trim(),
+          whatsapp: whatsapp.trim(),
+          houseAddress: houseAddress.trim(),
+          city: city.trim(),
+          state: state.trim(),
+          country: country.trim(),
+          postalCode: postalCode.trim(),
         },
+
         email: cleanEmail,
+
         account: {
           accountNumber: accountNumber.trim(),
+          sortCode: sortCode.trim(),
+          accountType,
           balance: Number(balance) || 0,
           status,
-          currency: "GBP",
+          currency,
         },
+
         card: {
           type: "Visa",
           expiry: "",
           status: "Active",
         },
-        security: {
-          code: "",
-        },
+
         notifications: [],
         recentTransactions: [],
         demo: true,
@@ -190,7 +255,7 @@ function CustomerManager() {
     }
   }
 
-  // SEND ACTUAL FIREBASE PASSWORD RESET EMAIL
+  // SEND FIREBASE PASSWORD RESET
   async function handlePasswordReset() {
     if (!selectedId || !email.trim()) {
       alert("Select a customer with a valid email address first.");
@@ -205,10 +270,7 @@ function CustomerManager() {
         email.trim().toLowerCase()
       );
 
-      alert(
-        "Password reset email sent to " +
-          email.trim().toLowerCase()
-      );
+      alert("Password reset email sent to " + email.trim().toLowerCase());
     } catch (error) {
       console.error("Password reset error:", error);
       alert(error.message);
@@ -247,19 +309,15 @@ function CustomerManager() {
     }
   }
 
-  // DELETE CUSTOMER PROFILE AND DEMO TRANSFER HISTORY
+  // DELETE CUSTOMER AND DEMO TRANSFERS
   async function handleDeleteCustomer() {
     if (!selectedId) {
       alert("Please select a customer first.");
       return;
     }
 
-    const customer = customers.find(
-      (item) => item.id === selectedId
-    );
-
-    const customerName =
-      customer?.customer?.name || name || "this customer";
+    const customer = customers.find((item) => item.id === selectedId);
+    const customerName = customer?.customer?.name || name || "this customer";
 
     const confirmed = window.confirm(
       `Are you sure you want to delete ${customerName}?\n\n` +
@@ -286,59 +344,32 @@ function CustomerManager() {
       );
 
       const transferSnapshot = await getDocs(transfersQuery);
-
-      // Delete transfers in batches.
       const transferDocs = transferSnapshot.docs;
 
       for (let i = 0; i < transferDocs.length; i += 450) {
         const batch = writeBatch(db);
-
         const group = transferDocs.slice(i, i + 450);
 
-        group.forEach((transfer) => {
-          batch.delete(transfer.ref);
-        });
+        group.forEach((transfer) => batch.delete(transfer.ref));
 
         await batch.commit();
       }
 
-      // Delete the customer Firestore profile.
       await deleteDoc(
-        doc(
-          db,
-          "bank",
-          "royalbank",
-          "customers",
-          selectedId
-        )
+        doc(db, "bank", "royalbank", "customers", selectedId)
       );
 
-      // Clear selected customer and form.
       setSelectedId("");
       selectCustomer("");
-
-      setName("");
-      setEmail("");
-      setPassword("");
-      setAccountNumber("");
-      setBalance("");
-      setStatus("Active");
-
-      setDemoPassword("");
-      setDemoPasswordSaved(false);
-      setShowDemoPassword(false);
+      resetForm();
 
       alert(
         "Customer profile and demo transfer history deleted.\n\n" +
-        "Please remove the customer's Firebase Authentication account " +
-        "separately through Firebase Console."
+        "Please remove the customer's Firebase Authentication account separately through Firebase Console."
       );
     } catch (error) {
       console.error("Customer deletion error:", error);
-
-      alert(
-        "Unable to complete customer deletion: " + error.message
-      );
+      alert("Unable to complete customer deletion: " + error.message);
     } finally {
       setSaving(false);
     }
@@ -354,6 +385,7 @@ function CustomerManager() {
     borderRadius: "6px",
     background: "#123B65",
     color: "#FFFFFF",
+    WebkitTextFillColor: "#FFFFFF",
   };
 
   const buttonStyle = {
@@ -373,6 +405,20 @@ function CustomerManager() {
     border: "1px solid #D4AF37",
   };
 
+  const sectionStyle = {
+    border: "1px solid rgba(212,175,55,0.3)",
+    borderRadius: "10px",
+    padding: "16px",
+    marginTop: "22px",
+    background: "#0B2542",
+  };
+
+  const sectionTitleStyle = {
+    color: "#D4AF37",
+    marginTop: 0,
+    marginBottom: "18px",
+  };
+
   return (
     <div
       style={{
@@ -389,9 +435,7 @@ function CustomerManager() {
         DEMO ENVIRONMENT — Test customer accounts only.
       </p>
 
-      <label>
-        Select Customer
-
+      <Field label="Select Customer">
         <select
           value={selectedId}
           onChange={(e) => selectCustomerRecord(e.target.value)}
@@ -405,75 +449,144 @@ function CustomerManager() {
             </option>
           ))}
         </select>
-      </label>
+      </Field>
 
-      <button
-        type="button"
-        onClick={newCustomer}
-        style={buttonStyle}
-      >
+      <button type="button" onClick={newCustomer} style={buttonStyle}>
         + New Customer
       </button>
 
       <hr style={{ margin: "22px 0", borderColor: "#526477" }} />
 
-      <label>
-        Customer Name
+      {/* PERSONAL INFORMATION */}
+      <div style={sectionStyle}>
+        <h3 style={sectionTitleStyle}>PERSONAL INFORMATION</h3>
 
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={inputStyle}
-        />
-      </label>
-
-      <label>
-        Email Address
-
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={inputStyle}
-        />
-      </label>
-
-      {!selectedId && (
-        <label>
-          Create Customer Password
-
+        <Field label="Customer Full Name">
           <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Minimum 6 characters"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             style={inputStyle}
           />
-        </label>
+        </Field>
+
+        <Field label="Gender">
+          <select
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+            style={inputStyle}
+          >
+            <option value="">Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </Field>
+
+        <Field label="Email Address">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={inputStyle}
+          />
+        </Field>
+
+        <Field label="Phone Number">
+          <input
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="+234..."
+            style={inputStyle}
+          />
+        </Field>
+
+        <Field label="WhatsApp Number">
+          <input
+            type="tel"
+            value={whatsapp}
+            onChange={(e) => setWhatsapp(e.target.value)}
+            placeholder="+234..."
+            style={inputStyle}
+          />
+        </Field>
+      </div>
+
+      {/* RESIDENTIAL ADDRESS */}
+      <div style={sectionStyle}>
+        <h3 style={sectionTitleStyle}>RESIDENTIAL ADDRESS</h3>
+
+        <Field label="House Address">
+          <textarea
+            value={houseAddress}
+            onChange={(e) => setHouseAddress(e.target.value)}
+            placeholder="House number, street and area"
+            rows={3}
+            style={{ ...inputStyle, resize: "vertical" }}
+          />
+        </Field>
+
+        <Field label="City">
+          <input
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            style={inputStyle}
+          />
+        </Field>
+
+        <Field label="State / Province">
+          <input
+            value={state}
+            onChange={(e) => setState(e.target.value)}
+            style={inputStyle}
+          />
+        </Field>
+
+        <Field label="Country">
+          <input
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            style={inputStyle}
+          />
+        </Field>
+
+        <Field label="Postal Code">
+          <input
+            value={postalCode}
+            onChange={(e) => setPostalCode(e.target.value)}
+            style={inputStyle}
+          />
+        </Field>
+      </div>
+
+      {/* CUSTOMER LOGIN */}
+      {!selectedId && (
+        <div style={sectionStyle}>
+          <h3 style={sectionTitleStyle}>CUSTOMER LOGIN</h3>
+
+          <Field label="Create Customer Password">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Minimum 6 characters"
+              style={inputStyle}
+            />
+          </Field>
+        </div>
       )}
 
+      {/* EXISTING PASSWORD MANAGER */}
       {selectedId && (
-        <div
-          style={{
-            padding: "16px",
-            marginBottom: "20px",
-            background: "#123B65",
-            border: "1px solid #D4AF37",
-            borderRadius: "9px",
-          }}
-        >
-          <h3 style={{ color: "#D4AF37", marginTop: 0 }}>
-            Demo Password Manager
-          </h3>
+        <div style={sectionStyle}>
+          <h3 style={sectionTitleStyle}>DEMO PASSWORD MANAGER</h3>
 
           <p style={{ fontSize: "13px", color: "#D5E2F0" }}>
-            Demo reference only. This does not change the actual
-            Firebase login password.
+            Demo reference only. This does not change the actual Firebase login password.
           </p>
 
-          <label>
-            Demo Password
-
+          <Field label="Demo Password">
             <input
               type={showDemoPassword ? "text" : "password"}
               value={demoPassword}
@@ -484,20 +597,12 @@ function CustomerManager() {
               placeholder="Enter a demo password"
               style={inputStyle}
             />
-          </label>
+          </Field>
 
-          <div
-            style={{
-              display: "flex",
-              gap: "8px",
-              flexWrap: "wrap",
-            }}
-          >
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             <button
               type="button"
-              onClick={() =>
-                setShowDemoPassword(!showDemoPassword)
-              }
+              onClick={() => setShowDemoPassword(!showDemoPassword)}
               style={secondaryButtonStyle}
             >
               {showDemoPassword ? "Hide Password" : "Show Password"}
@@ -522,17 +627,12 @@ function CustomerManager() {
           </div>
 
           {demoPasswordSaved && (
-            <p style={{ color: "#D4AF37", marginBottom: 0 }}>
+            <p style={{ color: "#D4AF37" }}>
               Demo reference confirmed for this session.
             </p>
           )}
 
-          <hr
-            style={{
-              borderColor: "#526477",
-              margin: "18px 0",
-            }}
-          />
+          <hr style={{ borderColor: "#526477", margin: "18px 0" }} />
 
           <button
             type="button"
@@ -540,47 +640,79 @@ function CustomerManager() {
             disabled={sendingReset}
             style={secondaryButtonStyle}
           >
-            {sendingReset
-              ? "Sending..."
-              : "Send Actual Password Reset Email"}
+            {sendingReset ? "Sending..." : "Send Actual Password Reset Email"}
           </button>
         </div>
       )}
 
-      <label>
-        Account Number
+      {/* ACCOUNT INFORMATION */}
+      <div style={sectionStyle}>
+        <h3 style={sectionTitleStyle}>ACCOUNT INFORMATION</h3>
 
-        <input
-          value={accountNumber}
-          onChange={(e) => setAccountNumber(e.target.value)}
-          style={inputStyle}
-        />
-      </label>
+        <Field label="Account Number">
+          <input
+            value={accountNumber}
+            onChange={(e) => setAccountNumber(e.target.value)}
+            style={inputStyle}
+          />
+        </Field>
 
-      <label>
-        Balance (demo value)
+        <Field label="Sort Code">
+          <input
+            value={sortCode}
+            onChange={(e) => setSortCode(e.target.value)}
+            style={inputStyle}
+          />
+        </Field>
 
-        <input
-          type="number"
-          value={balance}
-          onChange={(e) => setBalance(e.target.value)}
-          style={inputStyle}
-        />
-      </label>
+        <Field label="Account Type">
+          <select
+            value={accountType}
+            onChange={(e) => setAccountType(e.target.value)}
+            style={inputStyle}
+          >
+            <option>Personal Current Account</option>
+            <option>Personal Savings Account</option>
+            <option>Business Current Account</option>
+            <option>Business Savings Account</option>
+          </select>
+        </Field>
 
-      <label>
-        Account Status
+        <Field label="Account Currency">
+          <select
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            style={inputStyle}
+          >
+            <option value="GBP">GBP - British Pound</option>
+            <option value="USD">USD - US Dollar</option>
+            <option value="EUR">EUR - Euro</option>
+            <option value="NGN">NGN - Nigerian Naira</option>
+            <option value="CAD">CAD - Canadian Dollar</option>
+          </select>
+        </Field>
 
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          style={inputStyle}
-        >
-          <option>Active</option>
-          <option>Dormant</option>
-          <option>Restricted</option>
-        </select>
-      </label>
+        <Field label="Balance (demo value)">
+          <input
+            type="number"
+            value={balance}
+            onChange={(e) => setBalance(e.target.value)}
+            style={inputStyle}
+          />
+        </Field>
+
+        <Field label="Account Status">
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            style={inputStyle}
+          >
+            <option>Active</option>
+            <option>Dormant</option>
+            <option>Restricted</option>
+          </select>
+        </Field>
+      </div>
 
       <button
         type="button"
@@ -588,13 +720,15 @@ function CustomerManager() {
         disabled={saving || sendingReset}
         style={{
           ...buttonStyle,
+          width: "100%",
+          marginTop: "22px",
           opacity: saving ? 0.6 : 1,
         }}
       >
         {saving
           ? "Processing..."
           : selectedId
-          ? "Update Customer"
+          ? "Update Customer Profile"
           : "Create Customer Login"}
       </button>
 
@@ -613,7 +747,6 @@ function CustomerManager() {
             borderRadius: "6px",
             fontWeight: "bold",
             cursor: "pointer",
-            opacity: saving ? 0.6 : 1,
           }}
         >
           Delete Customer

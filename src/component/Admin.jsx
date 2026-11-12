@@ -4,7 +4,8 @@ import React, {
   useEffect,
   useState,
 } from "react";
-
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../firebase";
 import { BankContext } from "../context/BankContext";
 import { db } from "../firebase";
 import CustomerManager from "./CustomerManager";
@@ -181,13 +182,40 @@ function Admin({ setPage }) {
       },
     });
 
-  const saveSecurityInformation = () =>
-    saveSelectedCustomer({
-      security: {
-        ...(selectedCustomer.security || {}),
-        code: securityCode,
-      },
+  const saveSecurityInformation = async () => {
+  if (!selectedCustomerId) {
+    alert("Please select a customer first.");
+    return;
+  }
+
+  if (!/^\d{4,8}$/.test(securityCode.trim())) {
+    alert("Security code must contain 4 to 8 digits.");
+    return;
+  }
+
+  try {
+    setSaving(true);
+
+    const setCode = httpsCallable(
+      functions,
+      "setCustomerSecurityCode"
+    );
+
+    await setCode({
+      customerId: selectedCustomerId,
+      securityCode: securityCode.trim(),
     });
+
+    setSecurityCode("");
+
+    alert("Customer security code updated successfully.");
+  } catch (error) {
+    console.error("Security code update failed:", error);
+    alert(error.message || "Unable to update security code.");
+  } finally {
+    setSaving(false);
+  }
+};
 
   const sendNotification = async () => {
     if (!notificationTitle.trim() || !notificationMessage.trim()) {

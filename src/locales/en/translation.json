@@ -1,12 +1,11 @@
+
 {
   "royalBank": "Royal Bank",
-
   "login": "Login",
   "username": "Username",
   "password": "Password",
   "logout": "Logout",
   "loggedOut": "Logged Out",
-
   "dashboard": "Dashboard",
   "transactions": "Transactions",
   "transfer": "Transfer",
@@ -19,7 +18,6 @@
   "customerService": "Customer Service",
   "security": "Security",
   "securityCode": "Security Code",
-
   "back": "Back",
   "backToDashboard": "Back to Dashboard",
   "continue": "Continue",
@@ -28,45 +26,33 @@
   "close": "Close",
   "verify": "Verify",
   "verifySecurityCode": "Verify Security Code",
-
   "goodDay": "Good day",
-
   "availableBalance": "Available Balance",
   "balance": "Balance",
   "income": "Income",
   "expenses": "Expenses",
-
   "account": "Account",
   "accountNumber": "Account Number",
   "accountHolder": "Account Holder",
   "accountSummary": "Account Summary",
   "accountSettings": "Account Settings",
   "accountStatus": "Account Status",
-
   "currentAccount": "Current Account",
   "personalCurrentAccount": "Personal Current Account",
-
   "customerId": "Customer ID",
-
   "status": "Status",
   "dormant": "Dormant",
   "dormantAccount": "Dormant Account",
   "dormantAccountNotice": "Dormant Account Notice",
-
   "sortCode": "Sort Code",
   "currency": "Currency",
   "number": "Number",
-
   "quickActions": "Quick Actions",
-
   "recentTransactions": "Recent Transactions",
   "transactionHistory": "Royal Bank Transaction History",
   "fullTransactionHistory": "Full Transaction History",
-
   "lastActivity": "Last Activity",
-
   "search": "Search",
-
   "thankYouBanking": "Thank you for banking with Royal Bank.",
   "sessionEnded": "Your session has ended successfully.",
   "bankTransfer": "Bank Transfer",
@@ -75,32 +61,25 @@
   "amount": "Amount (£)",
   "paymentReference": "Payment Reference",
   "transferFee": "Transfer Fee",
-
   "bankCards": "Bank Cards",
   "platinumDebitCard": "Royal Bank Platinum Debit Card",
   "cardHolder": "Card Holder",
   "cardNumber": "Card Number",
   "expiry": "Expiry",
   "expires": "Expires",
-
   "securityVerification": "Security Verification",
   "enterSecurityCode": "Please enter your Security Code.",
   "invalidSecurityCode": "Invalid Security Code",
   "verifyingIdentity": "Verifying your identity... Please wait.",
-
   "securityVerificationRequired": "Security Verification Required",
   "securityVerificationMessage": "Complete your security verification to reactivate your account.",
-
   "loginAlert": "Login Alert",
   "loginAlertMessage": "A successful login to your online banking account was detected.",
-
   "welcome": "Welcome",
   "welcomeMessage": "Thank you for banking with Royal Bank Online.",
   "helpCentre": "Royal Bank Help Centre",
   "supportMessage": "If you need assistance with your account, please contact our customer support team.",
-
   "dormantNoticeMessage": "Your account has been placed in a dormant state due to inactivity. To restore full banking services, please complete the security verification process or contact the bank by email or visit the nearest branch for further information.",
-
   "changePassword": "Change Password",
   "notificationPreferences": "Notification Preferences",
   "darkMode": "Dark Mode",
@@ -110,7 +89,6 @@
   "trustedDevices": "Trusted Devices",
   "privacySecurity": "Privacy & Security",
   "saveChanges": "Save Changes",
-
   "propertyRental": "Property Rental",
   "businessIncome": "Business Income",
   "investmentReturn": "Investment Return",
@@ -138,29 +116,56 @@
   "royalBankAccountOpened": "Royal Bank Account Opened",
   "yearEndBonus": "Year-End Bonus",
   "houseRenovation": "House Renovation",
-  
   "cardDormantMessage": "This card is inactive because the account is dormant. Complete Security Code verification to restore card services.",
-
   "sendMoney": "Send Money",
   "deposit": "Deposit",
   "withdrawal": "Withdrawal",
-
   "confirmTransfer": "Confirm Transfer",
   "cancel": "Cancel",
-
   "success": "Success",
   "error": "Error",
-
   "yes": "Yes",
   "no": "No",
-
   "loading": "Loading...",
   "processing": "Processing...",
-
   "email": "Email",
   "phone": "Phone",
-
   "pleaseWait": "Please wait...",
   "online": "Online",
-  "offline": "Offline"
+  "offline": "Offline",
+
+  "transferReceipt": {
+    "noReceipt": "No transfer receipt available",
+    "returnToDashboard": "Please return to your dashboard.",
+    "backDashboard": "Back to Dashboard",
+    "awaitingTimestamp": "Awaiting timestamp",
+    "pending": "PENDING",
+    "successful": "SUCCESSFUL",
+    "failed": "FAILED",
+    "recipientName": "Recipient Name",
+    "recipientAddress": "Recipient Address",
+    "recipientCountry": "Recipient Country",
+    "receivingBank": "Receiving Bank",
+    "bankAddress": "Bank Address",
+    "accountNumber": "Account Number",
+    "iban": "IBAN",
+    "swiftBic": "SWIFT / BIC",
+    "sortCode": "Sort Code",
+    "accountType": "Account Type",
+    "paymentReference": "Payment Reference",
+    "transactionId": "Transaction ID",
+    "transactionDate": "Transaction Date",
+    "digitalBanking": "DIGITAL BANKING",
+    "transfer": "TRANSFER",
+    "receipt": "RECEIPT",
+    "transferDetails": "Transfer Details",
+    "receiptSubtitle": "Your transfer submission details are shown below.",
+    "transferAmount": "TRANSFER AMOUNT",
+    "transferTo": "TRANSFER TO",
+    "recipient": "Recipient",
+    "transactionInformation": "TRANSACTION INFORMATION",
+    "demoNotice": "This receipt confirms submission of a demo transfer request only. It does not confirm that funds have been sent or received.",
+    "slogan": "YOUR BANKING, YOUR WAY.",
+    "printReceipt": "Print Receipt"
+  }
 }

@@ -2,6 +2,7 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { getFunctions } from "firebase/functions";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAhnAnBiLVTA1Ce5dWb-Tz4J8f7gFMOK1A",
@@ -13,12 +14,15 @@ const firebaseConfig = {
   measurementId: "G-KMKHMP9JXD"
 };
 
-const app = getApps().length
+export const app = getApps().length
   ? getApp()
   : initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+
+// Cloud Functions connection
+export const functions = getFunctions(app, "us-central1");
 
 // Separate authentication instance for creating customer accounts.
 // This prevents customer creation from signing out the Admin.

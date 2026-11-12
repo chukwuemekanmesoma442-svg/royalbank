@@ -1,17 +1,27 @@
 
 import React, { useContext } from "react";
+import { useTranslation } from "react-i18next";
 import { BankContext } from "../context/BankContext";
 import logo from "../assets/logo.png";
 
 function TransferReceipt({ transfer, setPage }) {
+  const { t } = useTranslation();
   const { bank } = useContext(BankContext);
+
+  const tr = (key, fallback) =>
+    t(`transferReceipt.${key}`, { defaultValue: fallback });
 
   const allowedCurrencies = ["GBP", "USD", "EUR", "CAD", "AUD"];
 
-  const savedCurrency = bank?.customer?.currency || "GBP";
+  const savedCurrency =
+    transfer?.currency ||
+    bank?.customer?.currency ||
+    "GBP";
 
-  const currency = allowedCurrencies.includes(savedCurrency)
-    ? savedCurrency
+  const currency = allowedCurrencies.includes(
+    String(savedCurrency).toUpperCase()
+  )
+    ? String(savedCurrency).toUpperCase()
     : "GBP";
 
   const formatAmount = (amount) => {
@@ -31,33 +41,18 @@ function TransferReceipt({ transfer, setPage }) {
     }).format(numericAmount);
   };
 
-  if (!transfer) {
-    return (
-      <div style={styles.emptyPage}>
-        <div style={styles.emptyCard}>
-          <h2>No transfer receipt available</h2>
-          <p>Please return to your dashboard.</p>
-          <button
-            style={styles.primaryButton}
-            onClick={() => setPage("dashboard")}
-          >
-            Back to Dashboard
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   const formatDate = (value) => {
-    if (!value) return "Awaiting timestamp";
+    if (!value) return tr("awaitingTimestamp", "Awaiting timestamp");
 
     const date = value?.toDate
       ? value.toDate()
       : new Date(value);
 
-    if (isNaN(date.getTime())) return "Awaiting timestamp";
+    if (isNaN(date.getTime())) {
+      return tr("awaitingTimestamp", "Awaiting timestamp");
+    }
 
-    return date.toLocaleString("en-GB", {
+    return date.toLocaleString(undefined, {
       day: "2-digit",
       month: "long",
       year: "numeric",
@@ -67,25 +62,42 @@ function TransferReceipt({ transfer, setPage }) {
     });
   };
 
+  if (!transfer) {
+    return (
+      <div style={styles.emptyPage}>
+        <div style={styles.emptyCard}>
+          <h2>{tr("noReceipt", "No transfer receipt available")}</h2>
+          <p>{tr("returnToDashboard", "Please return to your dashboard.")}</p>
+          <button
+            style={styles.primaryButton}
+            onClick={() => setPage("dashboard")}
+          >
+            {tr("backDashboard", "Back to Dashboard")}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const currentStatus = String(
     transfer.status || "pending"
   ).toLowerCase();
 
   const statusSettings = {
     pending: {
-      label: "PENDING",
+      label: tr("pending", "PENDING"),
       color: "#946200",
       background: "#fff3cd",
       symbol: "◷",
     },
     successful: {
-      label: "SUCCESSFUL",
+      label: tr("successful", "SUCCESSFUL"),
       color: "#15803d",
       background: "#dcfce7",
       symbol: "✓",
     },
     failed: {
-      label: "FAILED",
+      label: tr("failed", "FAILED"),
       color: "#b91c1c",
       background: "#fee2e2",
       symbol: "!",
@@ -96,18 +108,25 @@ function TransferReceipt({ transfer, setPage }) {
     statusSettings[currentStatus] || statusSettings.pending;
 
   const details = [
-    ["Recipient Name", transfer.recipientName],
-    ["Receiving Bank", transfer.bankName],
-    ["Account Number", transfer.accountNumber],
-    ["Sort Code", transfer.sortCode],
-    ["Payment Reference", transfer.paymentReference],
-    ["Transaction ID", transfer.id],
-    ["Transaction Date", formatDate(transfer.createdAt)],
-  ];
+    ["recipientName", "Recipient Name", transfer.recipientName],
+    ["recipientAddress", "Recipient Address", transfer.recipientAddress],
+    ["recipientCountry", "Recipient Country", transfer.recipientCountry],
+    ["receivingBank", "Receiving Bank", transfer.bankName],
+    ["bankAddress", "Bank Address", transfer.bankAddress],
+    ["accountNumber", "Account Number", transfer.accountNumber],
+    ["iban", "IBAN", transfer.iban],
+    ["swiftBic", "SWIFT / BIC", transfer.swiftBic],
+    ["sortCode", "Sort Code", transfer.sortCode],
+    ["accountType", "Account Type", transfer.accountType],
+    ["paymentReference", "Payment Reference", transfer.paymentReference],
+    ["transactionId", "Transaction ID", transfer.id],
+    ["transactionDate", "Transaction Date", formatDate(transfer.createdAt)],
+  ].filter(([, , value]) => value);
 
   return (
     <div style={styles.page}>
       <div className="receipt-card" style={styles.receipt}>
+
         {/* HEADER */}
         <div style={styles.header}>
           <div style={styles.brand}>
@@ -120,38 +139,40 @@ function TransferReceipt({ transfer, setPage }) {
             <div>
               <h2 style={styles.brandName}>ROYAL BANK</h2>
               <p style={styles.brandSubtitle}>
-                DIGITAL BANKING
+                {tr("digitalBanking", "DIGITAL BANKING")}
               </p>
             </div>
           </div>
 
           <div style={styles.receiptLabel}>
-            PAYMENT
+            {tr("transfer", "TRANSFER")}
             <br />
-            RECEIPT
+            {tr("receipt", "RECEIPT")}
           </div>
         </div>
 
-        {/* DECORATIVE GOLD LINE */}
         <div style={styles.goldLine} />
 
-        {/* RECEIPT INTRO */}
+        {/* INTRODUCTION */}
         <div style={styles.intro}>
           <div style={styles.receiptIcon}>↗</div>
 
           <h2 style={styles.title}>
-            Transfer Details
+            {tr("transferDetails", "Transfer Details")}
           </h2>
 
           <p style={styles.subtitle}>
-            Your transfer submission details are shown below.
+            {tr(
+              "receiptSubtitle",
+              "Your transfer submission details are shown below."
+            )}
           </p>
         </div>
 
-        {/* AMOUNT CARD */}
+        {/* AMOUNT */}
         <div style={styles.amountCard}>
           <p style={styles.amountLabel}>
-            TRANSFER AMOUNT
+            {tr("transferAmount", "TRANSFER AMOUNT")}
           </p>
 
           <h1 style={styles.amount}>
@@ -165,14 +186,12 @@ function TransferReceipt({ transfer, setPage }) {
               color: status.color,
             }}
           >
-            <span style={{ fontSize: "16px" }}>
-              {status.symbol}
-            </span>
+            <span>{status.symbol}</span>
             {status.label}
           </div>
         </div>
 
-        {/* RECIPIENT SECTION */}
+        {/* BENEFICIARY */}
         <div style={styles.recipientCard}>
           <div style={styles.recipientIcon}>
             {String(transfer.recipientName || "R")
@@ -183,15 +202,15 @@ function TransferReceipt({ transfer, setPage }) {
 
           <div style={{ minWidth: 0 }}>
             <p style={styles.smallLabel}>
-              TRANSFER TO
+              {tr("transferTo", "TRANSFER TO")}
             </p>
 
             <h3 style={styles.recipientName}>
-              {transfer.recipientName || "Recipient"}
+              {transfer.recipientName || tr("recipient", "Recipient")}
             </h3>
 
             <p style={styles.bankName}>
-              {transfer.bankName || "Receiving Bank"}
+              {transfer.bankName || tr("receivingBank", "Receiving Bank")}
             </p>
           </div>
         </div>
@@ -199,13 +218,15 @@ function TransferReceipt({ transfer, setPage }) {
         {/* TRANSACTION DETAILS */}
         <div style={styles.detailsSection}>
           <div style={styles.sectionHeading}>
-            <span>TRANSACTION INFORMATION</span>
+            <span>
+              {tr("transactionInformation", "TRANSACTION INFORMATION")}
+            </span>
             <div style={styles.headingLine} />
           </div>
 
-          {details.map(([label, value], index) => (
+          {details.map(([key, fallback, value], index) => (
             <div
-              key={label}
+              key={key}
               style={{
                 ...styles.detailRow,
                 borderBottom:
@@ -215,33 +236,17 @@ function TransferReceipt({ transfer, setPage }) {
               }}
             >
               <span style={styles.detailLabel}>
-                {label}
+                {tr(key, fallback)}
               </span>
 
               <strong style={styles.detailValue}>
-                {value ? String(value) : "—"}
+                {String(value)}
               </strong>
             </div>
           ))}
         </div>
 
-        {/* FOOTER NOTICE */}
-        <div style={styles.notice}>
-          <span style={styles.noticeIcon}>ⓘ</span>
-
-          <p style={styles.noticeText}>
-            This receipt confirms submission of a demo transfer
-            request only. It does not confirm that funds have
-            been sent or received.
-          </p>
-        </div>
-
-        {/* FOOTER BRANDING */}
-        <div style={styles.footer}>
-          <div style={styles.footerLine} />
-          <p>ROYAL BANK</p>
-          <span>YOUR BANKING, YOUR WAY.</span>
-        </div>
+       
 
         {/* ACTION BUTTONS */}
         <div className="no-print" style={styles.actions}>
@@ -249,14 +254,14 @@ function TransferReceipt({ transfer, setPage }) {
             onClick={() => window.print()}
             style={styles.printButton}
           >
-            ↗ &nbsp; Print Receipt
+            ↗ &nbsp; {tr("printReceipt", "Print Receipt")}
           </button>
 
           <button
             onClick={() => setPage("dashboard")}
             style={styles.primaryButton}
           >
-            ← &nbsp; Back to Dashboard
+            ← &nbsp; {tr("backDashboard", "Back to Dashboard")}
           </button>
         </div>
       </div>
@@ -301,35 +306,32 @@ const styles = {
     padding: "30px 14px",
     fontFamily: "Arial, sans-serif",
   },
-
   receipt: {
     maxWidth: "540px",
+    width: "100%",
     margin: "0 auto",
     padding: "30px",
     background: "#ffffff",
     borderRadius: "18px",
     boxShadow: "0 12px 40px rgba(7, 27, 54, 0.12)",
   },
-
   header: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     gap: "10px",
   },
-
   brand: {
     display: "flex",
     alignItems: "center",
     gap: "12px",
+    minWidth: 0,
   },
-
   logo: {
     width: "65px",
     height: "65px",
     objectFit: "contain",
   },
-
   brandName: {
     color: "#082B6B",
     fontSize: "19px",
@@ -337,7 +339,6 @@ const styles = {
     fontWeight: "900",
     letterSpacing: "1px",
   },
-
   brandSubtitle: {
     color: "#a88746",
     fontSize: "9px",
@@ -345,7 +346,6 @@ const styles = {
     fontWeight: "bold",
     margin: "5px 0 0",
   },
-
   receiptLabel: {
     color: "#a88746",
     fontSize: "11px",
@@ -354,19 +354,16 @@ const styles = {
     textAlign: "right",
     lineHeight: "1.7",
   },
-
   goldLine: {
     height: "3px",
     background: "linear-gradient(90deg, #b28b43, #f1d58b, #b28b43)",
     marginTop: "22px",
     borderRadius: "5px",
   },
-
   intro: {
     textAlign: "center",
     padding: "28px 0 18px",
   },
-
   receiptIcon: {
     width: "48px",
     height: "48px",
@@ -379,20 +376,17 @@ const styles = {
     fontSize: "27px",
     margin: "0 auto 12px",
   },
-
   title: {
     color: "#082B6B",
     fontSize: "22px",
     margin: "0 0 7px",
   },
-
   subtitle: {
     color: "#8490a1",
     fontSize: "12px",
     margin: 0,
     lineHeight: "1.5",
   },
-
   amountCard: {
     background: "linear-gradient(140deg, #061a38, #0d3674)",
     padding: "26px 15px",
@@ -400,7 +394,6 @@ const styles = {
     textAlign: "center",
     marginTop: "12px",
   },
-
   amountLabel: {
     color: "#c9d5e7",
     fontSize: "11px",
@@ -408,14 +401,12 @@ const styles = {
     fontWeight: "bold",
     margin: "0 0 12px",
   },
-
   amount: {
     color: "#ffffff",
     fontSize: "32px",
     margin: "0 0 18px",
     overflowWrap: "anywhere",
   },
-
   statusBadge: {
     display: "inline-flex",
     alignItems: "center",
@@ -427,7 +418,6 @@ const styles = {
     fontWeight: "900",
     letterSpacing: "1px",
   },
-
   recipientCard: {
     display: "flex",
     alignItems: "center",
@@ -435,7 +425,6 @@ const styles = {
     padding: "20px 0",
     borderBottom: "1px solid #e9edf3",
   },
-
   recipientIcon: {
     width: "48px",
     height: "48px",
@@ -449,31 +438,26 @@ const styles = {
     fontSize: "20px",
     fontWeight: "bold",
   },
-
   smallLabel: {
     color: "#9aa4b2",
     fontSize: "10px",
     letterSpacing: "1.5px",
     margin: "0 0 5px",
   },
-
   recipientName: {
     color: "#082B6B",
     fontSize: "16px",
     margin: 0,
     overflowWrap: "anywhere",
   },
-
   bankName: {
     color: "#7c8797",
     fontSize: "12px",
     margin: "5px 0 0",
   },
-
   detailsSection: {
     marginTop: "25px",
   },
-
   sectionHeading: {
     display: "flex",
     alignItems: "center",
@@ -484,13 +468,11 @@ const styles = {
     fontWeight: "bold",
     marginBottom: "10px",
   },
-
   headingLine: {
     height: "1px",
     background: "#e8eaf0",
     flex: 1,
   },
-
   detailRow: {
     display: "flex",
     justifyContent: "space-between",
@@ -498,13 +480,11 @@ const styles = {
     gap: "15px",
     padding: "14px 0",
   },
-
   detailLabel: {
     color: "#8993a2",
     fontSize: "12px",
     flex: "0 0 40%",
   },
-
   detailValue: {
     color: "#18345d",
     fontSize: "12px",
@@ -512,7 +492,6 @@ const styles = {
     overflowWrap: "anywhere",
     maxWidth: "60%",
   },
-
   notice: {
     display: "flex",
     gap: "10px",
@@ -522,38 +501,32 @@ const styles = {
     padding: "13px",
     marginTop: "22px",
   },
-
   noticeIcon: {
     color: "#a88746",
     fontSize: "18px",
   },
-
   noticeText: {
     color: "#596579",
     fontSize: "11px",
     lineHeight: "1.6",
     margin: 0,
   },
-
   footer: {
     textAlign: "center",
     marginTop: "25px",
     color: "#082B6B",
   },
-
   footerLine: {
     height: "1px",
     background: "#e9edf3",
     marginBottom: "17px",
   },
-
   actions: {
     display: "flex",
     flexDirection: "column",
     gap: "11px",
     marginTop: "25px",
   },
-
   printButton: {
     width: "100%",
     padding: "14px",
@@ -565,7 +538,6 @@ const styles = {
     fontWeight: "bold",
     cursor: "pointer",
   },
-
   primaryButton: {
     width: "100%",
     padding: "15px",
@@ -577,7 +549,6 @@ const styles = {
     fontWeight: "bold",
     cursor: "pointer",
   },
-
   emptyPage: {
     minHeight: "100vh",
     background: "#edf1f7",
@@ -586,7 +557,6 @@ const styles = {
     alignItems: "center",
     padding: "20px",
   },
-
   emptyCard: {
     background: "#fff",
     padding: "30px",

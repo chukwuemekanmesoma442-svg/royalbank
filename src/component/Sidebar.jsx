@@ -1,6 +1,8 @@
 
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
 import logo from "../assets/logo.png";
 
 import {
@@ -11,42 +13,34 @@ import {
   FiHeadphones,
   FiX,
   FiChevronRight,
+  FiLogOut,
 } from "react-icons/fi";
 
 function Sidebar({ menuOpen, setMenuOpen, setPage }) {
   const { t } = useTranslation();
 
   const menuItems = [
-    {
-      label: t("dashboard"),
-      page: "dashboard",
-      icon: FiHome,
-    },
-    {
-      label: t("transactions"),
-      page: "transactions",
-      icon: FiCreditCard,
-    },
-    {
-      label: t("profile"),
-      page: "profile",
-      icon: FiUser,
-    },
-    {
-      label: t("settings"),
-      page: "settings",
-      icon: FiSettings,
-    },
-    {
-      label: t("customerService"),
-      page: "support",
-      icon: FiHeadphones,
-    },
+    { label: t("dashboard"), page: "dashboard", icon: FiHome },
+    { label: t("transactions"), page: "transactions", icon: FiCreditCard },
+    { label: t("profile"), page: "profile", icon: FiUser },
+    { label: t("settings"), page: "settings", icon: FiSettings },
+    { label: t("customerService"), page: "support", icon: FiHeadphones },
   ];
 
   const navigate = (page) => {
     setPage(page);
     setMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      setMenuOpen(false);
+      await signOut(auth);
+      setPage("login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      alert("Unable to log out. Please try again.");
+    }
   };
 
   const menuButtonStyle = {
@@ -185,19 +179,9 @@ function Sidebar({ menuOpen, setMenuOpen, setPage }) {
                   e.currentTarget.style.color = "#123B65";
                 }}
               >
-                <Icon
-                  size={19}
-                  strokeWidth={2}
-                />
-
-                <span style={{ flex: 1 }}>
-                  {item.label}
-                </span>
-
-                <FiChevronRight
-                  size={15}
-                  color="#A0AEC0"
-                />
+                <Icon size={19} strokeWidth={2} />
+                <span style={{ flex: 1 }}>{item.label}</span>
+                <FiChevronRight size={15} color="#A0AEC0" />
               </button>
             );
           })}
@@ -231,6 +215,27 @@ function Sidebar({ menuOpen, setMenuOpen, setPage }) {
             <FiHeadphones size={19} strokeWidth={2} />
             <span>Customer Service</span>
             <FiChevronRight size={15} color="#A0AEC0" />
+          </button>
+
+          {/* Logout button */}
+          <button
+            onClick={handleLogout}
+            style={{
+              ...menuButtonStyle,
+              marginTop: "10px",
+              color: "#C0392B",
+              background: "#FFF3F2",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#FDE5E3";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "#FFF3F2";
+            }}
+          >
+            <FiLogOut size={19} strokeWidth={2} />
+            <span style={{ flex: 1 }}>Log Out</span>
+            <FiChevronRight size={15} color="#C0392B" />
           </button>
 
           <div

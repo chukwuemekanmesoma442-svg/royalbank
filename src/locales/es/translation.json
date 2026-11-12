@@ -1,12 +1,11 @@
+
 {
   "royalBank": "Royal Bank",
-
   "login": "Iniciar sesión",
   "username": "Nombre de usuario",
   "password": "Contraseña",
   "logout": "Cerrar sesión",
   "loggedOut": "Sesión cerrada",
-
   "dashboard": "Panel",
   "transactions": "Transacciones",
   "transfer": "Transferencia",
@@ -19,7 +18,6 @@
   "customerService": "Servicio al cliente",
   "security": "Seguridad",
   "securityCode": "Código de seguridad",
-
   "back": "Atrás",
   "backToDashboard": "Volver al panel",
   "continue": "Continuar",
@@ -28,81 +26,60 @@
   "close": "Cerrar",
   "verify": "Verificar",
   "verifySecurityCode": "Verificar código de seguridad",
-
   "goodDay": "Buenos días",
-
   "availableBalance": "Saldo disponible",
   "balance": "Saldo",
   "income": "Ingresos",
   "expenses": "Gastos",
-
   "account": "Cuenta",
   "accountNumber": "Número de cuenta",
   "accountHolder": "Titular de la cuenta",
   "accountSummary": "Resumen de la cuenta",
   "accountSettings": "Configuración de la cuenta",
   "accountStatus": "Estado de la cuenta",
-
   "currentAccount": "Cuenta corriente",
   "personalCurrentAccount": "Cuenta corriente personal",
-
   "customerId": "ID del cliente",
-
   "status": "Estado",
   "dormant": "Inactiva",
   "dormantAccount": "Cuenta inactiva",
   "dormantAccountNotice": "Aviso de cuenta inactiva",
-
   "sortCode": "Código bancario",
   "currency": "Moneda",
   "number": "Número",
-
   "quickActions": "Acciones rápidas",
-
   "recentTransactions": "Transacciones recientes",
   "transactionHistory": "Historial de transacciones de Royal Bank",
   "fullTransactionHistory": "Historial completo de transacciones",
-
   "lastActivity": "Última actividad",
-
   "search": "Buscar",
-
   "thankYouBanking": "Gracias por utilizar Royal Bank.",
   "sessionEnded": "Su sesión ha finalizado correctamente.",
-
   "bankTransfer": "Transferencia bancaria",
   "recipientName": "Nombre del beneficiario",
   "bankName": "Nombre del banco",
   "amount": "Importe (£)",
   "paymentReference": "Referencia del pago",
   "transferFee": "Comisión de transferencia",
-
   "bankCards": "Tarjetas bancarias",
   "platinumDebitCard": "Tarjeta de débito Platinum de Royal Bank",
   "cardHolder": "Titular de la tarjeta",
   "cardNumber": "Número de tarjeta",
   "expiry": "Fecha de vencimiento",
   "expires": "Vence",
-
   "securityVerification": "Verificación de seguridad",
   "enterSecurityCode": "Introduzca su código de seguridad.",
   "invalidSecurityCode": "Código de seguridad no válido",
   "verifyingIdentity": "Verificando su identidad... Espere, por favor.",
-
   "securityVerificationRequired": "Se requiere verificación de seguridad",
   "securityVerificationMessage": "Complete la verificación de seguridad para reactivar su cuenta.",
-
   "loginAlert": "Alerta de inicio de sesión",
   "loginAlertMessage": "Se ha detectado un inicio de sesión correcto en su banca en línea.",
-
   "welcome": "Bienvenido",
   "welcomeMessage": "Gracias por utilizar Royal Bank Online.",
-
   "helpCentre": "Centro de ayuda de Royal Bank",
   "supportMessage": "Si necesita ayuda con su cuenta, póngase en contacto con nuestro servicio de atención al cliente.",
-
   "dormantNoticeMessage": "Su cuenta ha sido marcada como inactiva debido a la falta de actividad. Para restaurar todos los servicios bancarios, complete el proceso de verificación de seguridad o contacte con el banco por correo electrónico o visite la sucursal más cercana.",
-
   "changePassword": "Cambiar contraseña",
   "notificationPreferences": "Preferencias de notificaciones",
   "darkMode": "Modo oscuro",
@@ -112,7 +89,6 @@
   "trustedDevices": "Dispositivos de confianza",
   "privacySecurity": "Privacidad y seguridad",
   "saveChanges": "Guardar cambios",
-  
   "propertyRental": "Alquiler de propiedad",
   "businessIncome": "Ingresos del negocio",
   "investmentReturn": "Rendimiento de la inversión",
@@ -140,29 +116,55 @@
   "royalBankAccountOpened": "Cuenta de Royal Bank abierta",
   "yearEndBonus": "Bono de fin de año",
   "houseRenovation": "Renovación de la vivienda",
-
   "cardDormantMessage": "Esta tarjeta está inactiva porque la cuenta está inactiva. Complete la verificación del código de seguridad para restaurar los servicios de la tarjeta.",
-
   "sendMoney": "Enviar dinero",
   "deposit": "Depósito",
   "withdrawal": "Retiro",
-
   "confirmTransfer": "Confirmar transferencia",
   "cancel": "Cancelar",
-
   "success": "Éxito",
   "error": "Error",
-
   "yes": "Sí",
   "no": "No",
-
   "loading": "Cargando...",
   "processing": "Procesando...",
-
   "email": "Correo electrónico",
   "phone": "Teléfono",
-
   "pleaseWait": "Por favor, espere...",
   "online": "En línea",
-  "offline": "Sin conexión"
+  "offline": "Sin conexión",
+  "transferReceipt": {
+    "noReceipt": "No hay ningún recibo de transferencia disponible",
+    "returnToDashboard": "Por favor, vuelve a tu panel de control.",
+    "backDashboard": "Volver al panel de control",
+    "awaitingTimestamp": "Esperando fecha y hora",
+    "pending": "PENDIENTE",
+    "successful": "EXITOSA",
+    "failed": "FALLIDA",
+    "recipientName": "Nombre del beneficiario",
+    "recipientAddress": "Dirección del beneficiario",
+    "recipientCountry": "País del beneficiario",
+    "receivingBank": "Banco receptor",
+    "bankAddress": "Dirección del banco",
+    "accountNumber": "Número de cuenta",
+    "iban": "IBAN",
+    "swiftBic": "SWIFT / BIC",
+    "sortCode": "Código bancario",
+    "accountType": "Tipo de cuenta",
+    "paymentReference": "Referencia de pago",
+    "transactionId": "ID de transacción",
+    "transactionDate": "Fecha de transacción",
+    "digitalBanking": "BANCA DIGITAL",
+    "transfer": "TRANSFERENCIA",
+    "receipt": "RECIBO",
+    "transferDetails": "Detalles de la transferencia",
+    "receiptSubtitle": "A continuación se muestran los detalles de tu solicitud de transferencia.",
+    "transferAmount": "IMPORTE DE LA TRANSFERENCIA",
+    "transferTo": "TRANSFERIR A",
+    "recipient": "Beneficiario",
+    "transactionInformation": "INFORMACIÓN DE LA TRANSACCIÓN",
+    "demoNotice": "Este recibo confirma únicamente el envío de una solicitud de transferencia de demostración. No confirma que los fondos hayan sido enviados o recibidos.",
+    "slogan": "TU BANCO, A TU MANERA.",
+    "printReceipt": "Imprimir recibo"
+  }
 }
